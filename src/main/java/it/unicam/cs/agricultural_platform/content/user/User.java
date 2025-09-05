@@ -1,6 +1,8 @@
 package it.unicam.cs.agricultural_platform.content.user;
 
-public class User {
+import it.unicam.cs.agricultural_platform.repository.RepositoryItem;
+
+public class User extends RepositoryItem {
     private String name;
     private String surname;
     private String email;
@@ -9,6 +11,10 @@ public class User {
     private String codFis;
     private String username;
     private UserType userType;
+
+    public User(long id) {
+        super(id);
+    }
 
     public String getName() {
         return name;

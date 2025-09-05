@@ -1,11 +1,16 @@
 package it.unicam.cs.agricultural_platform.content;
 
 import it.unicam.cs.agricultural_platform.content.user.User;
+import it.unicam.cs.agricultural_platform.repository.RepositoryItem;
 
-public class Content {
+public abstract class Content extends RepositoryItem {
     protected boolean IsApproved;
     protected boolean ReviewNeeded;
     protected User Author;
+
+    public Content(long id) {
+        super(id);
+    }
 
     public boolean isApproved() {
         return IsApproved;
