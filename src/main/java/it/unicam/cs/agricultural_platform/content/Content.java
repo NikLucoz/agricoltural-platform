@@ -4,8 +4,8 @@ import it.unicam.cs.agricultural_platform.content.user.User;
 import it.unicam.cs.agricultural_platform.repository.RepositoryItem;
 
 public abstract class Content extends RepositoryItem {
-    protected boolean IsApproved;
-    protected boolean ReviewNeeded;
+    protected boolean IsApproved = false;
+    protected boolean ReviewNeeded = false;
     protected User Author;
 
     public Content(long id) {

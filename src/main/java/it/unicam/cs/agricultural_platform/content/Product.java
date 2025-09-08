@@ -9,14 +9,12 @@ public class Product extends Content{
 
     private String name;
     private String description;
-    private User producer;
+    private User author;
     private List<Certificate> certificates;
     private List<TransformationProcess> processes;
 
-    public Product(long id, String name, String description) {
+    public Product(long id) {
         super(id);
-        this.name = name;
-        this.description = description;
         this.certificates = new ArrayList<>();
         this.processes = new ArrayList<>();
     }
@@ -37,12 +35,12 @@ public class Product extends Content{
         this.description = description;
     }
 
-    public User getProducer() {
-        return this.producer;
+    public User getAuthor() {
+        return this.author;
     }
 
-    public void setProducer(User producer) {
-        this.producer = producer;
+    public void setAuthor(User author) {
+        this.author = author;
     }
 
     public List<Certificate> getCertificates() {
@@ -86,7 +84,7 @@ public class Product extends Content{
         }
     }
 
-    public boolean addProcessesList(List<TransformationProcess> processes) {
+    public boolean addProcessList(List<TransformationProcess> processes) {
         if(this.processes.containsAll(processes)){
             System.out.println("Processi già presenti");
             return false;
@@ -98,4 +96,19 @@ public class Product extends Content{
     }
 
 
+    public boolean removeCertificate(Certificate certificate) {
+        if (certificates.contains(certificate)) {
+            certificates.remove(certificate);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean removeProcess(TransformationProcess process) {
+        if(processes.contains(process)) {
+            processes.remove(process);
+            return true;
+        }
+        return false;
+    }
 }

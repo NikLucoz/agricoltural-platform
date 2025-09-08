@@ -65,4 +65,8 @@ public class ItemRepository<T extends RepositoryItem> implements Repository<T> {
     public long getNextId() {
         return lastId + 1;
     }
+
+    public List<T> getAllItemsList() {
+        return new ArrayList<>(items.values());
+    }
 }

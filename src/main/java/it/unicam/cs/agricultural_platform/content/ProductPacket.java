@@ -16,6 +16,12 @@ public class ProductPacket extends Content{
         this.products = new ArrayList<>();
     }
 
+    public ProductPacket(long id, String name, String description, List<Product> products) {
+        super(id);
+        this.name = name;
+        this.description = description;
+        this.products = products;
+    }
 
     public String getName() {
         return this.name;
@@ -34,6 +40,10 @@ public class ProductPacket extends Content{
     }
 
     public List<Product> getProducts() {return this.products;}
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 
     public boolean addProduct(Product product){
         if(this.products.contains(product)){
