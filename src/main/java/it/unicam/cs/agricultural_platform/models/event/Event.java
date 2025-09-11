@@ -1,32 +1,41 @@
-package it.unicam.cs.agricultural_platform.content;
+package it.unicam.cs.agricultural_platform.models.event;
 
-import it.unicam.cs.agricultural_platform.content.user.User;
-
-import it.unicam.cs.agricultural_platform.repository.RepositoryItem;
+import it.unicam.cs.agricultural_platform.models.user.User;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Event extends RepositoryItem {
+@Entity
+public class Event {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private String description;
     private LocalDateTime localDateTime;
     private String place;
-    private List<User> guests;
 
+    @Enumerated(EnumType.STRING)
     private EventType eventType;
-    private List<User> participants;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Partecipation> participants;
+
 
     public Event(long id, String name, String description, LocalDateTime localDateTime, String place, EventType eventType) {
-        super(id);
         this.name = name;
         this.description = description;
         this.localDateTime = localDateTime;
         this.place = place;
-        this.guests = new ArrayList<>();
         this.eventType = eventType;
         this.participants = new ArrayList<>();
+    }
+
+    public Event() {
+
     }
 
     public String getName() {
@@ -61,22 +70,6 @@ public class Event extends RepositoryItem {
         this.place = place;
     }
 
-    public void setGuests(List<User> guests) {
-        this.guests = guests;
-    }
-
-    public List<User> getGuests() {
-        return guests;
-    }
-
-    public void addGuest(User user) {
-        guests.add(user);
-    }
-
-    public void removeGuest(User user) {
-        guests.remove(user);
-    }
-
     public EventType getEventType() {
         return eventType;
     }
@@ -85,19 +78,28 @@ public class Event extends RepositoryItem {
         this.eventType = eventType;
     }
 
-    public List<User> getParticipants() {
+    public List<Partecipation> getParticipants() {
         return participants;
     }
 
-    public void setParticipants(List<User> participants) {
-        this.participants = participants;
-    }
-
     public void removeParticipant(User user) {
-        participants.remove(user);
+        participants.removeIf(p -> p.getUser().equals(user));
     }
 
     public void addParticipant(User user) {
-        participants.add(user);
+        participants.add(new Partecipation(this, user));
+    }
+
+    public boolean hasParticipant(User user) {
+        for (Partecipation p : participants) {
+            if (p.getUser().equals(user)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

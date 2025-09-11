@@ -1,20 +1,39 @@
-package it.unicam.cs.agricultural_platform.content.user;
+package it.unicam.cs.agricultural_platform.models.user;
 
-import it.unicam.cs.agricultural_platform.repository.RepositoryItem;
+import jakarta.persistence.*;
 
-public class User extends RepositoryItem {
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+public class User {
     private String name;
     private String surname;
-    private String email;
-    private String password;
-    private String pIva;
-    private String codFis;
-    private String username;
-    private UserType userType;
 
-    public User(long id) {
-        super(id);
-    }
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(unique = true, nullable = false)
+    private String pIva;
+
+    @Column(unique = true, nullable = false)
+    private String codFis;
+
+    @Column(unique = true, nullable = false)
+    private String username;
+
+    @ElementCollection(targetClass = UserType.class)
+    @CollectionTable(name = "users_user_types", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "user_types")
+    private List<UserType> userTypes = new ArrayList<UserType>();
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     public String getName() {
         return name;
@@ -72,11 +91,7 @@ public class User extends RepositoryItem {
         this.username = username;
     }
 
-    public UserType getUserType() {
-        return userType;
-    }
-
-    public void setUserType(UserType userType) {
-        this.userType = userType;
+    public Long getId() {
+        return id;
     }
 }

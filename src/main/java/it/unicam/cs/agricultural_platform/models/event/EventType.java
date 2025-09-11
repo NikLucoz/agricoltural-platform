@@ -1,4 +1,4 @@
-package it.unicam.cs.agricultural_platform.content;
+package it.unicam.cs.agricultural_platform.models.event;
 
 public enum EventType {
     FAIR,

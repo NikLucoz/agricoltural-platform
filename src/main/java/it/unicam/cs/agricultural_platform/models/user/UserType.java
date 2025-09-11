@@ -1,4 +1,4 @@
-package it.unicam.cs.agricultural_platform.content.user;
+package it.unicam.cs.agricultural_platform.models.user;
 
 public enum UserType {
     PRODUCER,
