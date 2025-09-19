@@ -8,8 +8,6 @@ import jakarta.persistence.InheritanceType;
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public class Product extends Content {
-    private String name;
-    private String description;
     private String certificates;
     private String processes;
 
@@ -18,22 +16,6 @@ public class Product extends Content {
 
     public Product() {
 
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public String getCertificates() {

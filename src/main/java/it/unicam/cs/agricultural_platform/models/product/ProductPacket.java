@@ -10,36 +10,12 @@ import java.util.List;
 
 @Entity
 public class ProductPacket extends Content {
-    private String name;
-    private String description;
 
     @OneToMany(mappedBy = "packet", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ProductInPacket> productsInPacket = new ArrayList<>();
 
-    public ProductPacket(long id, String name, String description) {
-        this.name = name;
-        this.description = description;
-        this.productsInPacket = new ArrayList<>();
-    }
-
     public ProductPacket() {
 
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return this.description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 
     public boolean addProduct(Product product, int quantity) {
