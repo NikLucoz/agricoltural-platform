@@ -18,9 +18,14 @@ public class CartItem {
     }
 
     private int quantity;
+
     @ManyToOne
     @JoinColumn(name = "wrappee_id")
     private Content wrappee;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private UserCart cart;
 
     public int getQuantity() {
         return quantity;

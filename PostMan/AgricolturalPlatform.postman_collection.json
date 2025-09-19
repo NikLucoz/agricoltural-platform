@@ -1,0 +1,42 @@
+{
+	"info": {
+		"_postman_id": "a12700b2-327a-4cd7-a05b-2c9733ea0778",
+		"name": "AgricolturalPlatform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "30714248"
+	},
+	"item": [
+		{
+			"name": "UserTest",
+			"item": [
+				{
+					"name": "GetAllUsers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/users/"
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserWithId",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/users/1"
+					},
+					"response": []
+				},
+				{
+					"name": "GetUserCart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/users/1/cart"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

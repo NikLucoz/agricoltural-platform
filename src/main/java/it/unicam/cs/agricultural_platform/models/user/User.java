@@ -1,12 +1,18 @@
 package it.unicam.cs.agricultural_platform.models.user;
 
+import it.unicam.cs.agricultural_platform.models.user.cart.UserCart;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "platform_user")
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     private String name;
     private String surname;
 
@@ -31,9 +37,17 @@ public class User {
     @Column(name = "user_types")
     private List<UserType> userTypes = new ArrayList<UserType>();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @OneToOne
+    @JoinColumn(name = "user_cart_id")
+    private UserCart userCart;
+
+    public UserCart getUserCart() {
+        return userCart;
+    }
+
+    public void setUserCart(UserCart userCart) {
+        this.userCart = userCart;
+    }
 
     public String getName() {
         return name;
@@ -93,5 +107,13 @@ public class User {
 
     public Long getId() {
         return id;
+    }
+
+    public UserCart getCart() {
+        return userCart;
+    }
+
+    public boolean hasUserType(UserType userType) {
+        return userTypes.contains(userType);
     }
 }
