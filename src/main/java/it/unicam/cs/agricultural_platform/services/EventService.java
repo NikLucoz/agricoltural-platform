@@ -20,6 +20,10 @@ public class EventService {
         return eventRepository.findEventById(id);
     }
 
+    public Event getEvent(String name){
+        return eventRepository.findEventByName(name);
+    }
+
     public List<Event> getEvents(){
         return eventRepository.findAll();
     }
