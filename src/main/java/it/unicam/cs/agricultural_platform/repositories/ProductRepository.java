@@ -10,7 +10,7 @@ import java.util.List;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     Product findProductById(long id);
 
-    List<Product> findAllProductsByUser(User user);
+    List<Product> findAllProductsByAuthor(User user);
 
     @Query("SELECT p FROM Product p WHERE p.isApproved = true")
     List<Product> findAllApprovedProducts();
@@ -33,9 +33,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query ("SELECT p FROM Product p WHERE p.isApproved = false AND p.author = :user")
     List<Product> findAllNotApprovedProductsByUser(User user);
 
-    @Query("SELECT p FROM Product p WHERE p.isReviewNeeded = true")
+    @Query("SELECT p FROM Product p WHERE p.reviewNeeded = true")
     List<Product> findAllReviewNeededProducts();
 
-    @Query ("SELECT p FROM Product p WHERE p.isReviewNeeded = false AND p.author = :user")
+    @Query ("SELECT p FROM Product p WHERE p.reviewNeeded = false AND p.author = :user")
     List<Product> findAllReviewNeededProductsByUser(User user);
 }

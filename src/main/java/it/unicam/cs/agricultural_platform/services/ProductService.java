@@ -26,7 +26,7 @@ public class ProductService {
     }
 
     public List<Product> getProductsByUser(User user){
-        return productRepository.findAllProductsByUser(user);
+        return productRepository.findAllProductsByAuthor(user);
     }
 
     public boolean existsProduct(long id) {
@@ -92,6 +92,7 @@ public class ProductService {
 
     public boolean addProduct(Product product) {
         try {
+            if(product.getAuthor() == null) return false;
             productRepository.save(product);
             return true;
         } catch (Exception e) {

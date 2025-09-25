@@ -1,7 +1,13 @@
 package it.unicam.cs.agricultural_platform.facades;
 
+import it.unicam.cs.agricultural_platform.dto.ProductDTO;
+import it.unicam.cs.agricultural_platform.dto.ProductInPacketDTO;
+import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.models.product.Product;
+import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
+import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
+import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +21,8 @@ public class ContentFacade {
 
     @Autowired
     private ProductService productService;
-
+    @Autowired
+    private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
 
@@ -38,6 +45,15 @@ public class ContentFacade {
         return new ArrayList<>();
     }
 
+    public List<ProductPacket> getProductPackets() {return productPacketService.getProductPackets();}
+    public ProductPacket getProductPacket(long id) {return productPacketService.getProductPacket(id);}
+    public List<ProductPacket> getUserProductPackets(long userId) {
+        if(userService.existsUser(userId)){
+            User user = userService.getUserById(userId);
+            return productPacketService.getProductPacketsByUser(user);
+        }
+        return new ArrayList<>();
+    }
 
     // === APPROVED ===
 
@@ -107,7 +123,9 @@ public class ContentFacade {
 
     // === CRUD ===
 
-    public boolean addProduct(Product product) {
+    public boolean addProduct(ProductDTO productDTO) {
+        var author = userService.getUserById(productDTO.getAuthorId());
+        var product = ProductDTO.fromDTO(productDTO, author);
         return productService.addProduct(product);
     }
 
@@ -119,4 +137,22 @@ public class ContentFacade {
         return productService.deleteProduct(id);
     }
 
+    public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
+        var author = userService.getUserById(productPacketDTO.getAuthorId());
+        var productPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
+
+        for(var productInPacketDto : productPacketDTO.getProductsInPacket()) {
+            var product_id = productInPacketDto.getProductId();
+
+            if (!productService.existsProduct(product_id)) continue;
+            var product = productService.getProduct(product_id);
+            productPacket.addProduct(product, productInPacketDto.getQuantity());
+        }
+
+        return productPacketService.addProductPacket(productPacket);
+    }
+
+    public boolean deleteProductPacket(long id) {return productPacketService.deleteProductPacket(id);}
+
+    public boolean updateProductPacket(long id, ProductPacket productPacket) { return productPacketService.updateProductPacket(id, productPacket);}
 }

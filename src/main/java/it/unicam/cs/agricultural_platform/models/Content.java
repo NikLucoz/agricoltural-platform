@@ -7,18 +7,19 @@ import jakarta.persistence.*;
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Content {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "content_seq")
+    @SequenceGenerator(name = "content_seq", sequenceName = "content_sequence", allocationSize = 1)
     private Long id;
     private String name;
     private String description;
-    private boolean IsApproved = false;
-    private boolean ReviewNeeded = false;
+    private boolean isApproved = false;
+    private boolean reviewNeeded = false;
     private double price;
     private int stockQuantity;
 
     @ManyToOne
     @JoinColumn(name = "author_id", nullable = false)
-    private User Author;
+    protected User author;
 
     public Content() {
 
@@ -41,27 +42,27 @@ public abstract class Content {
     }
 
     public boolean isApproved() {
-        return IsApproved;
+        return isApproved;
     }
 
     public boolean isReviewNeeded() {
-        return ReviewNeeded;
+        return reviewNeeded;
     }
 
     public User getAuthor() {
-        return Author;
+        return author;
     }
 
     public void setApproved(boolean approved) {
-        IsApproved = approved;
+        isApproved = approved;
     }
 
     public void setReviewNeeded(boolean reviewNeeded) {
-        ReviewNeeded = reviewNeeded;
+        reviewNeeded = reviewNeeded;
     }
 
     public void setAuthor(User author) {
-        Author = author;
+        this.author = author;
     }
 
     public Long getId() {

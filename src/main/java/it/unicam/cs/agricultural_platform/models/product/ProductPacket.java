@@ -18,11 +18,15 @@ public class ProductPacket extends Content {
 
     }
 
+    // TODO: DA RIVEDERE
+    // In questo modo non supporta l'aggiugere una quantità ad un prodotto già presente nel pacchetto
     public boolean addProduct(Product product, int quantity) {
         if(product == null) return false;
         if(quantity <= 0) return false;
 
         ProductInPacket pip = new ProductInPacket(this, product, quantity);
+        pip.setPacket(this);
+        pip.setProduct(product);
         productsInPacket.add(pip);
         return true;
     }
@@ -45,5 +49,9 @@ public class ProductPacket extends Content {
 
     public List<ProductInPacket> getProductsInPacket() {
         return productsInPacket;
+    }
+
+    public void setProductsInPacket(List<ProductInPacket> productsInPacket) {
+        this.productsInPacket = productsInPacket;
     }
 }

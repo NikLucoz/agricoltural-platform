@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
+import it.unicam.cs.agricultural_platform.dto.ProductDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -117,10 +118,47 @@ public class ProductController {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // === CRUD ===
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addProduct(@RequestBody Product product){
+    public ResponseEntity<Object> addProduct(@RequestBody ProductDTO product){
         if(!contentFacade.addProduct(product)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
