@@ -42,4 +42,8 @@ public class ProductPacket extends Content {
         pip.setQuantity(pip.getQuantity() - 1);
         return true;
     }
+
+    public List<ProductInPacket> getProductsInPacket() {
+        return productsInPacket;
+    }
 }
