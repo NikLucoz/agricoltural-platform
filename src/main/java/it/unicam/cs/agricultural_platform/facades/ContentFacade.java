@@ -3,10 +3,12 @@ package it.unicam.cs.agricultural_platform.facades;
 import it.unicam.cs.agricultural_platform.dto.ProductDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductInPacketDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
+import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
+import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
@@ -25,9 +27,95 @@ public class ContentFacade {
     private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ContentRepository<Content> contentRepository;
 
+    //region CONTENT METHODS
 
-    // === GENERIC ===
+    public Content getApprovedContent(long id, String type) {
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getApprovedProduct(id);
+            case "packet" -> productPacketService.getApprovedProductPacket(id);
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public Content getNotApprovedContent(long id, String type) {
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getNotApprovedProduct(id);
+            case "packet" -> productPacketService.getNotApprovedProductPacket(id);
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public List<? extends Content> getAllNotApprovedContents(String type) {
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getAllNotApprovedProducts();
+            case "packet" -> productPacketService.getAllNotApprovedProductPackets();
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public List<? extends Content> getAllApprovedContents(String type) {
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getAllApprovedProducts();
+            case "packet" -> productPacketService.getAllApprovedProductPackets();
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public List<? extends Content> getAllNotApprovedContentsByUser(long userId, String type) {
+        if(!userService.existsUser(userId)) return null;
+        var user = userService.getUserById(userId);
+
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getAllNotApprovedProductsByUser(user);
+            case "packet" -> productPacketService.getAllNotApprovedProductPacketsByUser(user);
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public List<? extends Content> getAllApprovedContentsByUser(long userId, String type) {
+        if(!userService.existsUser(userId)) return null;
+        var user = userService.getUserById(userId);
+
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getAllApprovedProductsByUser(user);
+            case "packet" -> productPacketService.getAllApprovedProductPacketsByUser(user);
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public List<? extends Content> getAllReviewNeededContents(String type) {
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getAllReviewNeededProducts();
+            case "packet" -> productPacketService.getAllReviewNeededProductPackets();
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public List<? extends Content> getAllReviewNeededContentsByUser(long userId, String type) {
+        if(!userService.existsUser(userId)) return null;
+        var user = userService.getUserById(userId);
+
+        return switch (type.toLowerCase()) {
+            case "product" -> productService.getAllReviewNeededProductsByUser(user);
+            case "packet" -> productPacketService.getAllReviewNeededProductPacketsByUser(user);
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    public void setContentApprovedStatus(long id, String type, boolean approvedStatus) {
+        switch (type.toLowerCase()) {
+            case "product" -> productService.setProductApproveStatus(id, approvedStatus);
+            case "packet" -> productPacketService.setProductPacketApproveStatus(id, approvedStatus);
+            default -> throw new IllegalArgumentException("Tipo non supportato");
+        };
+    }
+
+    //endregion
+
+    //region PRODUCT METHODS
 
     public List<Product> getProducts() {
         return productService.getProducts();
@@ -45,84 +133,6 @@ public class ContentFacade {
         return new ArrayList<>();
     }
 
-    public List<ProductPacket> getProductPackets() {return productPacketService.getProductPackets();}
-    public ProductPacket getProductPacket(long id) {return productPacketService.getProductPacket(id);}
-    public List<ProductPacket> getUserProductPackets(long userId) {
-        if(userService.existsUser(userId)){
-            User user = userService.getUserById(userId);
-            return productPacketService.getProductPacketsByUser(user);
-        }
-        return new ArrayList<>();
-    }
-
-    // === APPROVED ===
-
-    public List<Product> getAllApprovedProducts() {
-        return productService.getAllApprovedProducts();
-    }
-
-    public List<Product> getAllApprovedProducts(String filter) {
-        if(filter != null && !filter.isBlank()) {
-            return productService.getAllApprovedProducts(filter);
-        }
-        return new ArrayList<>();
-    }
-
-    public Product getApprovedProduct(long id) {
-        return productService.getApprovedProduct(id);
-    }
-
-    public List<Product> getAllApprovedProductsByUser(long userId) {
-        if(userService.existsUser(userId)){
-            User user = userService.getUserById(userId);
-            return productService.getAllApprovedProductsByUser(user);
-        }
-        return new ArrayList<>();
-    }
-
-    public void setProductApprovedStatus(long id, boolean approvedStatus) {
-        if(productService.existsProduct(id)) {
-            productService.setProductApproveStatus(id, approvedStatus);
-        }
-    }
-
-
-    // === NOT APPROVED ===
-
-    public List<Product> getAllNotApprovedProducts() {
-        return productService.getAllNotApprovedProducts();
-    }
-
-    public Product getNotApprovedProduct(long id) {
-        return productService.getNotApprovedProduct(id);
-    }
-
-    public List<Product> getAllNotApprovedProductsByUser(long userId) {
-        if(userService.existsUser(userId)){
-            User user = userService.getUserById(userId);
-            return productService.getAllNotApprovedProductsByUser(user);
-        }
-        return new ArrayList<>();
-    }
-
-
-    // == REVIEW NEEDED ===
-
-    public List<Product> getAllReviewNeededProducts() {
-        return productService.getAllReviewNeededProducts();
-    }
-
-    public List<Product> getAllReviewNeededProductsByUser(long userId) {
-        if(userService.existsUser(userId)){
-            User user = userService.getUserById(userId);
-            return productService.getAllReviewNeededProductsByUser(user);
-        }
-        return new ArrayList<>();
-    }
-
-
-    // === CRUD ===
-
     public boolean addProduct(ProductDTO productDTO) {
         var author = userService.getUserById(productDTO.getAuthorId());
         var product = ProductDTO.fromDTO(productDTO, author);
@@ -137,22 +147,122 @@ public class ContentFacade {
         return productService.deleteProduct(id);
     }
 
+    public List<Product> getAllApprovedProducts(String filter) {
+        if(filter != null && !filter.isBlank()) {
+            return productService.getAllApprovedProducts(filter);
+        }
+        return new ArrayList<>();
+    }
+
+    //    public List<Product> getAllApprovedProducts() {
+//        return productService.getAllApprovedProducts();
+//    }
+//
+//
+//
+//    public Product getApprovedProduct(long id) {
+//        return productService.getApprovedProduct(id);
+//    }
+//
+//    public List<Product> getAllApprovedProductsByUser(long userId) {
+//        if(userService.existsUser(userId)){
+//            User user = userService.getUserById(userId);
+//            return productService.getAllApprovedProductsByUser(user);
+//        }
+//        return new ArrayList<>();
+//    }
+
+//    public List<Product> getAllNotApprovedProducts() {
+//        return productService.getAllNotApprovedProducts();
+//    }
+//
+//    public Product getNotApprovedProduct(long id) {
+//        return productService.getNotApprovedProduct(id);
+//    }
+//
+//    public List<Product> getAllNotApprovedProductsByUser(long userId) {
+//        if(userService.existsUser(userId)){
+//            User user = userService.getUserById(userId);
+//            return productService.getAllNotApprovedProductsByUser(user);
+//        }
+//        return new ArrayList<>();
+//    }
+//
+//    public List<Product> getAllReviewNeededProducts() {
+//        return productService.getAllReviewNeededProducts();
+//    }
+//
+//    public List<Product> getAllReviewNeededProductsByUser(long userId) {
+//        if(userService.existsUser(userId)){
+//            User user = userService.getUserById(userId);
+//            return productService.getAllReviewNeededProductsByUser(user);
+//        }
+//        return new ArrayList<>();
+//    }
+
+    //endregion
+
+    //region PRODUCT PACKET METHODS
+
+    public List<ProductPacket> getProductPackets() {return productPacketService.getProductPackets();}
+
+    public ProductPacket getProductPacket(long id) {return productPacketService.getProductPacket(id);}
+
+    public List<ProductPacket> getUserProductPackets(long userId) {
+        if(userService.existsUser(userId)){
+            User user = userService.getUserById(userId);
+            return productPacketService.getProductPacketsByUser(user);
+        }
+        return new ArrayList<>();
+    }
+
     public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
         var author = userService.getUserById(productPacketDTO.getAuthorId());
         var productPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
 
+        var productsInPacket = new ArrayList<ProductInPacket>();
+
+        // Cerco i prodotti da mettere nel pacchetto tramite gli id nel DTO e li aggiungo alla lista
         for(var productInPacketDto : productPacketDTO.getProductsInPacket()) {
             var product_id = productInPacketDto.getProductId();
 
             if (!productService.existsProduct(product_id)) continue;
             var product = productService.getProduct(product_id);
-            productPacket.addProduct(product, productInPacketDto.getQuantity());
+            var productInPacket = new ProductInPacket(productPacket, product, productInPacketDto.getQuantity());
+            productsInPacket.add(productInPacket);
         }
+
+        productPacket.setProductsInPacket(productsInPacket);
 
         return productPacketService.addProductPacket(productPacket);
     }
 
-    public boolean deleteProductPacket(long id) {return productPacketService.deleteProductPacket(id);}
+    public boolean deleteProductPacket(long id) { return productPacketService.deleteProductPacket(id); }
 
-    public boolean updateProductPacket(long id, ProductPacket productPacket) { return productPacketService.updateProductPacket(id, productPacket);}
+    public boolean updateProductPacket(long id, ProductPacketDTO productPacketDTO) {
+        var original = productPacketService.getProductPacket(id);
+        var author = userService.getUserById(productPacketDTO.getAuthorId());
+        var updatedProductPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
+
+        var productsInPacket = new ArrayList<ProductInPacket>();
+
+        // Cerco i prodotti da mettere nel pacchetto tramite gli id nel DTO e li aggiungo alla lista
+        for(var productInPacketDto : productPacketDTO.getProductsInPacket()) {
+            var product_id = productInPacketDto.getProductId();
+
+            if (!productService.existsProduct(product_id)) continue;
+            var product = productService.getProduct(product_id);
+            var productInPacket = new ProductInPacket(original, product, productInPacketDto.getQuantity());
+            productsInPacket.add(productInPacket);
+        }
+
+        updatedProductPacket.setProductsInPacket(productsInPacket);
+        return productPacketService.updateProductPacket(original, updatedProductPacket);
+    }
+
+    public List<Product> getProductListFromPacket(long id) {
+        return new ArrayList<>();
+    }
+
+    //endregion
 }

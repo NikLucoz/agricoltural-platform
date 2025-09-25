@@ -2,6 +2,7 @@ package it.unicam.cs.agricultural_platform.controllers;
 
 import it.unicam.cs.agricultural_platform.dto.ProductDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
+import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ProductController {
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
+    // TODO: DA RIVEDERE
     @GetMapping("/{filter}")
     public ResponseEntity<List<Product>> getProducts(@PathVariable String filter){
         List<Product> productList = contentFacade.getAllApprovedProducts(filter);
@@ -56,28 +58,28 @@ public class ProductController {
     // === APPROVED ===
 
     @GetMapping("/approved")
-    public ResponseEntity<List<Product>> getApprovedProducts(){
-        List<Product> productList = contentFacade.getAllApprovedProducts();
+    public ResponseEntity<List<? extends Content>> getApprovedProducts(){
+        List<? extends Content> productList = contentFacade.getAllApprovedContents("product");
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
     @GetMapping("/approved/{id}")
     public ResponseEntity<Product> getApprovedProduct(@PathVariable long id){
-        Product product = contentFacade.getApprovedProduct(id);
+        Product product = (Product) contentFacade.getApprovedContent(id, "product");
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     //TODO Capire come mai la route va scritta in questo modo
     @GetMapping("/approved/user/{userId}")
-    public ResponseEntity<List<Product>> getAllApprovedProductsByUser(@PathVariable long userId){
-        List<Product> products = contentFacade.getAllApprovedProductsByUser(userId);
+    public ResponseEntity<List<? extends Content>>  getAllApprovedProductsByUser(@PathVariable long userId){
+        List<? extends Content> products = contentFacade.getAllApprovedContentsByUser(userId, "product");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
     //TODO Controllare
     @PutMapping("/{id}/setApproveStatus")
     public ResponseEntity<Object> setProductApprovedStatus(@PathVariable long id, @RequestBody boolean approvedStatus){
-        contentFacade.setProductApprovedStatus(id, approvedStatus);
+        contentFacade.setContentApprovedStatus(id, "product", approvedStatus);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -85,20 +87,20 @@ public class ProductController {
     // === NOT APPROVED ===
 
     @GetMapping("/notApproved")
-    public ResponseEntity<List<Product>> getNotApprovedProducts(){
-        List<Product> productList = contentFacade.getAllNotApprovedProducts();
+    public ResponseEntity<List<? extends Content>>  getNotApprovedProducts(){
+        List<? extends Content> productList = contentFacade.getAllNotApprovedContents("product");
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
     @GetMapping("/notApproved/{id}")
-    public ResponseEntity<Product> getNotApprovedProduct(@PathVariable long id){
-        Product product = contentFacade.getNotApprovedProduct(id);
+    public ResponseEntity<Content> getNotApprovedProduct(@PathVariable long id){
+        Content product = contentFacade.getNotApprovedContent(id, "product");
         return new ResponseEntity<>(product, HttpStatus.OK);
     }
 
     @GetMapping("/notApproved/user/{userId}")
-    public ResponseEntity<List<Product>> getNotApprovedProductsByUser(@PathVariable long userId){
-        List<Product> products = contentFacade.getAllNotApprovedProductsByUser(userId);
+    public ResponseEntity<List<? extends Content>> getNotApprovedProductsByUser(@PathVariable long userId){
+        List<? extends Content> products = contentFacade.getAllNotApprovedContentsByUser(userId, "product");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
 
@@ -106,54 +108,16 @@ public class ProductController {
     // === REVIEW NEEDED ===
 
     @GetMapping("/reviewNeeded")
-    public ResponseEntity<List<Product>> getReviewNeededProducts(){
-        List<Product> productList = contentFacade.getAllReviewNeededProducts();
+    public ResponseEntity<List<? extends Content>> getReviewNeededProducts(){
+        List<? extends Content> productList = contentFacade.getAllReviewNeededContents("product");
         return new ResponseEntity<>(productList, HttpStatus.OK);
     }
 
     @GetMapping("/reviewNeeded/user/{userId}")
-    public ResponseEntity<List<Product>> getAllReviewNeededProductsByUser(@PathVariable long userId){
-        List<Product> products = contentFacade.getAllReviewNeededProductsByUser(userId);
+    public ResponseEntity<List<? extends Content>> getAllReviewNeededProductsByUser(@PathVariable long userId){
+        List<? extends Content> products = contentFacade.getAllReviewNeededContentsByUser(userId, "product");
         return new ResponseEntity<>(products, HttpStatus.OK);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     // === CRUD ===
 

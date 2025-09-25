@@ -15,18 +15,17 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-
     // === GENERIC ===
     public List<Product> getProducts() {
         return productRepository.findAll();
     }
 
     public Product getProduct(long id) {
-        return productRepository.findProductById(id);
+        return productRepository.findById(id);
     }
 
     public List<Product> getProductsByUser(User user){
-        return productRepository.findAllProductsByAuthor(user);
+        return productRepository.findAllByAuthor(user);
     }
 
     public boolean existsProduct(long id) {
@@ -37,7 +36,7 @@ public class ProductService {
     // === APPROVED ===
 
     public List<Product> getAllApprovedProducts() {
-        return productRepository.findAllApprovedProducts();
+        return productRepository.findAllByIsApprovedTrue();
     }
 
     public List<Product> getAllApprovedProducts(String filter) {
@@ -45,15 +44,15 @@ public class ProductService {
     }
 
     public Product getApprovedProduct(long id) {
-        return productRepository.findApprovedProductById(id);
+        return productRepository.findByIdAndIsApprovedTrue(id);
     }
 
     public List<Product> getAllApprovedProductsByUser(User user) {
-        return productRepository.findAllApprovedProductsByUser(user);
+        return productRepository.findAllByAuthorAndIsApprovedTrue(user);
     }
 
     public void setProductApproveStatus(long id, boolean approvedStatus) {
-        var product = productRepository.findProductById(id);
+        var product = productRepository.findById(id);
         product.setApproved(approvedStatus);
 
         product.setReviewNeeded(!approvedStatus);
@@ -64,15 +63,15 @@ public class ProductService {
     // === NOT APPROVED ===
 
     public List<Product> getAllNotApprovedProducts() {
-        return productRepository.findAllNotApprovedProducts();
+        return productRepository.findAllByIsApprovedFalse();
     }
 
     public Product getNotApprovedProduct(long id) {
-        return productRepository.findNotApprovedProductById(id);
+        return productRepository.findByIdAndIsApprovedFalse(id);
     }
 
     public List<Product> getAllNotApprovedProductsByUser(User user) {
-        return productRepository.findAllNotApprovedProductsByUser(user);
+        return productRepository.findAllByAuthorAndIsApprovedFalse(user);
     }
 
 
@@ -80,11 +79,11 @@ public class ProductService {
     // === REVIEW NEEDED ===
 
     public List<Product> getAllReviewNeededProducts() {
-        return productRepository.findAllReviewNeededProducts();
+        return productRepository.findAllByReviewNeededTrue();
     }
 
     public List<Product> getAllReviewNeededProductsByUser(User user) {
-        return productRepository.findAllReviewNeededProductsByUser(user);
+        return productRepository.findAllByAuthorAndReviewNeededTrue(user);
     }
 
 
@@ -101,7 +100,7 @@ public class ProductService {
     }
 
     public boolean updateProduct(long id, Product updatedProduct) {
-        var product = productRepository.findProductById(id);
+        var product = productRepository.findById(id);
         if(product == null) return false;
 
         if(updatedProduct == null) return false;

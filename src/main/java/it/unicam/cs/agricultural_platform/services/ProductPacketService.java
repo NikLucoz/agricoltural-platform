@@ -1,7 +1,6 @@
 package it.unicam.cs.agricultural_platform.services;
 
-import it.unicam.cs.agricultural_platform.models.product.Product;
-import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
+import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.repositories.ProductPacketRepository;
@@ -18,6 +17,7 @@ public class ProductPacketService {
     private ProductPacketRepository productPacketRepository;
 
     public List<ProductPacket> getProductPackets(){return productPacketRepository.findAll();}
+
     public ProductPacket getProductPacket(long id){return productPacketRepository.findProductPacketById(id);}
 
     @Transactional
@@ -38,9 +38,7 @@ public class ProductPacketService {
         return false;
     }
 
-    // TODO: DA RIVEDERE
-    public boolean updateProductPacket(long id, ProductPacket updatedProductPacket){
-        var productPacket = productPacketRepository.findProductPacketById(id);
+    public boolean updateProductPacket(ProductPacket productPacket, ProductPacket updatedProductPacket){
         if(updatedProductPacket == null) return false;
         if(productPacket == null) return false;
 
@@ -52,12 +50,8 @@ public class ProductPacketService {
             productPacket.setDescription(updatedProductPacket.getDescription());
         }
 
-        // TODO: Da capire come fare se voglio togliere dei valori? perchè in questo modo sto sempre aggiungendo e mai togliendo
         if (updatedProductPacket.getProductsInPacket() != null && !updatedProductPacket.getProductsInPacket().isEmpty()) {
-            // TODO: Manca il purgare la lista prima di mettere quelli nuovi
-            for (ProductInPacket productInPacket : updatedProductPacket.getProductsInPacket()) {
-                productPacket.addProduct(productInPacket.getProduct(), productInPacket.getQuantity());
-            }
+            productPacket.setProductsInPacket(updatedProductPacket.getProductsInPacket());
         }
 
         productPacketRepository.save(productPacket);
@@ -65,6 +59,46 @@ public class ProductPacketService {
     }
 
     public List<ProductPacket> getProductPacketsByUser(User user) {
-        return productPacketRepository.findAllProductPacketsByAuthor(user);
+        return productPacketRepository.findAllByAuthor(user);
+    }
+
+    public List<? extends Content> getAllNotApprovedProductPackets() {
+        return productPacketRepository.findAllByIsApprovedFalse();
+    }
+
+    public List<? extends Content> getAllNotApprovedProductPacketsByUser(User user) {
+        return productPacketRepository.findAllByAuthorAndIsApprovedFalse(user);
+    }
+
+    public List<? extends Content> getAllApprovedProductPacketsByUser(User user) {
+        return productPacketRepository.findAllByAuthorAndIsApprovedTrue(user);
+    }
+
+    public List<? extends Content> getAllApprovedProductPackets() {
+        return productPacketRepository.findAllByIsApprovedTrue();
+    }
+
+    public List<? extends Content> getAllReviewNeededProductPackets() {
+        return productPacketRepository.findAllByReviewNeededTrue();
+    }
+
+    public List<? extends Content> getAllReviewNeededProductPacketsByUser(User user) {
+        return productPacketRepository.findAllByAuthorAndReviewNeededTrue(user);
+    }
+
+    public Content getApprovedProductPacket(long id) {
+        return productPacketRepository.findByIdAndIsApprovedTrue(id);
+    }
+
+    public Content getNotApprovedProductPacket(long id) {
+        return productPacketRepository.findByIdAndIsApprovedFalse(id);
+    }
+
+    public void setProductPacketApproveStatus(long id, boolean approvedStatus) {
+        var productPacket = productPacketRepository.findById(id);
+        productPacket.setApproved(approvedStatus);
+
+        productPacket.setReviewNeeded(!approvedStatus);
+        productPacketRepository.save(productPacket);
     }
 }
