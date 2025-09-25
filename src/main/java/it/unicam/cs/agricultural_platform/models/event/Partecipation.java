@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.models.event;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import jakarta.persistence.*;
 
@@ -12,6 +13,7 @@ public class Partecipation {
 
     @ManyToOne
     @JoinColumn(name = "event_id")
+    @JsonIgnore
     private Event event;
 
     @ManyToOne
