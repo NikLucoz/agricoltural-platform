@@ -29,8 +29,8 @@ public class EventController {
         return new ResponseEntity<>(event, HttpStatus.OK);
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<Event> getEvent(@PathVariable String name) {
+    @GetMapping(params = "name")
+    public ResponseEntity<Event> getEventByName(@RequestParam String name) {
         Event event = eventFacade.getEvent(name);
         if(event == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         return new ResponseEntity<>(event, HttpStatus.OK);
