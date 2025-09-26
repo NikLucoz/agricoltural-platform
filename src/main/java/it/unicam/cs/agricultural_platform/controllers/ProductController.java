@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
+import it.unicam.cs.agricultural_platform.dto.ContentDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
 import it.unicam.cs.agricultural_platform.models.Content;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/products")
@@ -23,60 +25,77 @@ public class ProductController {
     // === GENERIC ===
 
     @GetMapping("/")
-    public ResponseEntity<List<Product>> getProducts(){
-        List<Product> productList = contentFacade.getProducts();
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> getProducts(){
+        List<Product> productsList = contentFacade.getProducts();
+        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<ProductDTO> productDTOList = productsList.stream().map(ProductDTO::fromProduct).collect(Collectors.toList());
+
+        return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
-    // TODO: DA RIVEDERE
     @GetMapping("/{filter}")
-    public ResponseEntity<List<Product>> getProducts(@PathVariable String filter){
-        List<Product> productList = contentFacade.getAllApprovedProducts(filter);
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+    public ResponseEntity<List<ProductDTO>> getProducts(@PathVariable String filter){
+        List<Product> productsList = contentFacade.getAllApprovedProducts(filter);
+        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<ProductDTO> productDTOList = productsList.stream().map(ProductDTO::fromProduct).collect(Collectors.toList());
+
+        return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable long id){
+    public ResponseEntity<ProductDTO> getProduct(@PathVariable long id){
         Product product = contentFacade.getProduct(id);
-        if(product == null){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        if(product == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        ProductDTO productDTO = ProductDTO.fromProduct(product);
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
-    //TODO Come mai qui ci va il get e in "getProduct", ad esempio, no?
-    @GetMapping("/{userId}/get")
-    public ResponseEntity<List<Product>> getProductsByUser(@PathVariable long userId){
-        List<Product> userProductsList = contentFacade.getProductsByUser(userId);
-        if(userProductsList == null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-        return new ResponseEntity<>(userProductsList, HttpStatus.OK);
+    //TODO Controllare la route
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<ProductDTO>> getProductsByUser(@PathVariable long userId){
+        List<Product> userProductList = contentFacade.getProductsByUser(userId);
+        if(userProductList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<ProductDTO> userProductDTOList = userProductList.stream().map(ProductDTO::fromProduct).collect(Collectors.toList());
+        return new ResponseEntity<>(userProductDTOList, HttpStatus.OK);
     }
 
 
     // === APPROVED ===
 
     @GetMapping("/approved")
-    public ResponseEntity<List<? extends Content>> getApprovedProducts(){
-        List<? extends Content> productList = contentFacade.getAllApprovedContents("product");
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+    public ResponseEntity<List<? extends ContentDTO>> getApprovedProducts(){
+        List<? extends Content> productsList = contentFacade.getAllApprovedContents("product");
+        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<? extends ContentDTO> productDTOList = productsList.stream().map(p -> ProductDTO.fromProduct((Product) p)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/approved/{id}")
-    public ResponseEntity<Product> getApprovedProduct(@PathVariable long id){
+    public ResponseEntity<ProductDTO> getApprovedProduct(@PathVariable long id){
         Product product = (Product) contentFacade.getApprovedContent(id, "product");
-        return new ResponseEntity<>(product, HttpStatus.OK);
+        if(product == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        ProductDTO productDTO = ProductDTO.fromProduct(product);
+
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
-    //TODO Capire come mai la route va scritta in questo modo
     @GetMapping("/approved/user/{userId}")
-    public ResponseEntity<List<? extends Content>>  getAllApprovedProductsByUser(@PathVariable long userId){
-        List<? extends Content> products = contentFacade.getAllApprovedContentsByUser(userId, "product");
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<List<? extends ContentDTO>>  getAllApprovedProductsByUser(@PathVariable long userId){
+        List<? extends Content> userProductsList = contentFacade.getAllApprovedContentsByUser(userId, "product");
+        if(userProductsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<? extends ContentDTO> userProductDTOList = userProductsList.stream().map(p -> ProductDTO.fromProduct((Product) p)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userProductDTOList, HttpStatus.OK);
     }
 
-    //TODO Controllare
     @PutMapping("/{id}/setApproveStatus")
     public ResponseEntity<Object> setProductApprovedStatus(@PathVariable long id, @RequestBody boolean approvedStatus){
         contentFacade.setContentApprovedStatus(id, "product", approvedStatus);
@@ -87,36 +106,57 @@ public class ProductController {
     // === NOT APPROVED ===
 
     @GetMapping("/notApproved")
-    public ResponseEntity<List<? extends Content>>  getNotApprovedProducts(){
-        List<? extends Content> productList = contentFacade.getAllNotApprovedContents("product");
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+    public ResponseEntity<List<? extends ContentDTO>>  getNotApprovedProducts(){
+        List<? extends Content> productsList = contentFacade.getAllNotApprovedContents("product");
+        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<? extends ContentDTO> productDTOList = productsList.stream().map(p -> ProductDTO.fromProduct((Product) p)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/notApproved/{id}")
-    public ResponseEntity<Content> getNotApprovedProduct(@PathVariable long id){
-        Content product = contentFacade.getNotApprovedContent(id, "product");
-        return new ResponseEntity<>(product, HttpStatus.OK);
+    public ResponseEntity<ProductDTO> getNotApprovedProduct(@PathVariable long id){
+        Product product = (Product) contentFacade.getNotApprovedContent(id, "product");
+        if(product == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        ProductDTO productDTO = ProductDTO.fromProduct(product);
+
+        return new ResponseEntity<>(productDTO, HttpStatus.OK);
     }
 
     @GetMapping("/notApproved/user/{userId}")
-    public ResponseEntity<List<? extends Content>> getNotApprovedProductsByUser(@PathVariable long userId){
-        List<? extends Content> products = contentFacade.getAllNotApprovedContentsByUser(userId, "product");
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<List<? extends ContentDTO>> getNotApprovedProductsByUser(@PathVariable long userId){
+        List<? extends Content> userProductList = contentFacade.getAllNotApprovedContentsByUser(userId, "product");
+        if(userProductList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<? extends ContentDTO> userProductDTOList = userProductList.stream().map(p -> ProductDTO.fromProduct((Product) p)).collect(Collectors.toList());
+
+
+        return new ResponseEntity<>(userProductDTOList, HttpStatus.OK);
     }
 
 
     // === REVIEW NEEDED ===
 
     @GetMapping("/reviewNeeded")
-    public ResponseEntity<List<? extends Content>> getReviewNeededProducts(){
-        List<? extends Content> productList = contentFacade.getAllReviewNeededContents("product");
-        return new ResponseEntity<>(productList, HttpStatus.OK);
+    public ResponseEntity<List<? extends ContentDTO>> getReviewNeededProducts(){
+        List<? extends Content> productsList = contentFacade.getAllReviewNeededContents("product");
+        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<? extends ContentDTO> productDTOList = productsList.stream().map(p -> ProductDTO.fromProduct((Product) p)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/reviewNeeded/user/{userId}")
-    public ResponseEntity<List<? extends Content>> getAllReviewNeededProductsByUser(@PathVariable long userId){
-        List<? extends Content> products = contentFacade.getAllReviewNeededContentsByUser(userId, "product");
-        return new ResponseEntity<>(products, HttpStatus.OK);
+    public ResponseEntity<List<? extends ContentDTO>> getAllReviewNeededProductsByUser(@PathVariable long userId){
+        List<? extends Content> userProductList = contentFacade.getAllReviewNeededContentsByUser(userId, "product");
+        if(userProductList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<? extends ContentDTO> userProductDTOList = userProductList.stream().map(p -> ProductDTO.fromProduct((Product) p)).collect(Collectors.toList());
+
+        return new ResponseEntity<>(userProductDTOList, HttpStatus.OK);
     }
 
     // === CRUD ===
