@@ -26,6 +26,7 @@ public class ProductDTO extends ContentDTO {
         product.setPrice(dto.getPrice());
         product.setStockQuantity(dto.getStockQuantity());
         product.setCertificates(dto.getCertificates());
+        product.setProcesses(dto.getProcesses());
         return product;
     }
 
@@ -40,7 +41,7 @@ public class ProductDTO extends ContentDTO {
         dto.setStockQuantity(product.getStockQuantity());
         dto.setCertificates(product.getCertificates());
         dto.setAuthorId(product.getAuthor().getId());
-
+        dto.setProcesses(product.getProcesses());
         return dto;
     }
 

@@ -58,7 +58,7 @@ public abstract class Content {
     }
 
     public void setReviewNeeded(boolean reviewNeeded) {
-        reviewNeeded = reviewNeeded;
+        this.reviewNeeded = reviewNeeded;
     }
 
     public void setAuthor(User author) {
