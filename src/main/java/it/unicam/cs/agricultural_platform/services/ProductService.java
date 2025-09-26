@@ -99,11 +99,9 @@ public class ProductService {
         }
     }
 
-    public boolean updateProduct(long id, Product updatedProduct) {
-        var product = productRepository.findById(id);
-        if(product == null) return false;
-
+    public boolean updateProduct(Product product, Product updatedProduct) {
         if(updatedProduct == null) return false;
+        if(product == null) return false;
 
         if (updatedProduct.getName() != null && !updatedProduct.getName().isBlank()) {
             product.setName(updatedProduct.getName());

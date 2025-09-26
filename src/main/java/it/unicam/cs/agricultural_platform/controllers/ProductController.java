@@ -130,8 +130,8 @@ public class ProductController {
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<Object> updateProduct(@PathVariable long id, @RequestBody Product product){
-        if(!contentFacade.updateProduct(id, product)){
+    public ResponseEntity<Object> updateProduct(@PathVariable long id, @RequestBody ProductDTO productDTO){
+        if(!contentFacade.updateProduct(id, productDTO)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);

@@ -139,8 +139,12 @@ public class ContentFacade {
         return productService.addProduct(product);
     }
 
-    public boolean updateProduct(long id, Product product) {
-        return productService.updateProduct(id, product);
+    public boolean updateProduct(long id, ProductDTO productDTO) {
+        var original = productService.getProduct(id);
+        var author = userService.getUserById(productDTO.getAuthorId());
+        var updatedProduct = ProductDTO.fromDTO(productDTO, author);
+
+        return productService.updateProduct(original, updatedProduct);
     }
 
     public boolean deleteProduct(long id) {
