@@ -46,4 +46,11 @@ public class CartItem {
     public Double getPrice() {
         return wrappee.getPrice() * quantity;
     }
+
+    public CartItem(int quantity, Content wrappee, UserCart cart) {
+        this.quantity = quantity;
+        this.wrappee = wrappee;
+        this.cart = cart;
+    }
+    public CartItem(){}
 }

@@ -109,9 +109,6 @@ public class User {
         return id;
     }
 
-    public UserCart getCart() {
-        return userCart;
-    }
 
     public boolean hasUserType(UserType userType) {
         return userTypes.contains(userType);
