@@ -1,15 +1,13 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
 import it.unicam.cs.agricultural_platform.dto.ContentDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductDTO;
+import it.unicam.cs.agricultural_platform.dto.ProductInPacketDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
 import it.unicam.cs.agricultural_platform.models.Content;
-import it.unicam.cs.agricultural_platform.models.product.Product;
+import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
-import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,13 +55,11 @@ public class ProductPacketController {
     }
 
     @GetMapping("/{id}/getProducts")
-    public ResponseEntity<List<Product>> getProductsListFromPacket(@PathVariable long id){
-        List<Product> productsList = contentFacade.getProductListFromPacket(id);
-        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<List<ProductInPacketDTO>> getProductsListFromPacket(@PathVariable long id){
+        List<ProductInPacket> productsList = contentFacade.getProductListFromPacket(id);
+        List<ProductInPacketDTO> productInPacketDTOS = productsList.stream().map(ProductInPacketDTO::fromProductInPacket).collect(Collectors.toList());
 
-        //TODO Da controllare e terminare di implementare
-
-        return new ResponseEntity<>(productsList, HttpStatus.OK);
+        return new ResponseEntity<>(productInPacketDTOS, HttpStatus.OK);
     }
 
     @PutMapping("/{id}/setApproveStatus")

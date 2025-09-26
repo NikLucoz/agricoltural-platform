@@ -1,6 +1,7 @@
 package it.unicam.cs.agricultural_platform.services;
 
 import it.unicam.cs.agricultural_platform.models.Content;
+import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.repositories.ProductPacketRepository;
@@ -18,7 +19,7 @@ public class ProductPacketService {
 
     public List<ProductPacket> getProductPackets(){return productPacketRepository.findAll();}
 
-    public ProductPacket getProductPacket(long id){return productPacketRepository.findProductPacketById(id);}
+    public ProductPacket getProductPacket(long id){return productPacketRepository.findById(id);}
 
     @Transactional
     public boolean addProductPacket(ProductPacket productPacket){
@@ -100,5 +101,11 @@ public class ProductPacketService {
 
         productPacket.setReviewNeeded(!approvedStatus);
         productPacketRepository.save(productPacket);
+    }
+
+    public List<ProductInPacket> getProductInPackets(long id) {
+        if(!productPacketRepository.existsById(id)) return null;
+        var productPacket = productPacketRepository.findById(id);
+        return productPacket.getProductsInPacket();
     }
 }

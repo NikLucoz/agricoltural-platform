@@ -1,7 +1,6 @@
 package it.unicam.cs.agricultural_platform.facades;
 
 import it.unicam.cs.agricultural_platform.dto.ProductDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductInPacketDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
@@ -27,8 +26,6 @@ public class ContentFacade {
     private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
-    @Autowired
-    private ContentRepository<Content> contentRepository;
 
     //region CONTENT METHODS
 
@@ -110,7 +107,7 @@ public class ContentFacade {
             case "product" -> productService.setProductApproveStatus(id, approvedStatus);
             case "packet" -> productPacketService.setProductPacketApproveStatus(id, approvedStatus);
             default -> throw new IllegalArgumentException("Tipo non supportato");
-        };
+        }
     }
 
     //endregion
@@ -264,8 +261,8 @@ public class ContentFacade {
         return productPacketService.updateProductPacket(original, updatedProductPacket);
     }
 
-    public List<Product> getProductListFromPacket(long id) {
-        return new ArrayList<>();
+    public List<ProductInPacket> getProductListFromPacket(long id) {
+        return productPacketService.getProductInPackets(id);
     }
 
     //endregion
