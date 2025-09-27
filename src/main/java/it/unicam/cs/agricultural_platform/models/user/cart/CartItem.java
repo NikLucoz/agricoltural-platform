@@ -2,6 +2,8 @@ package it.unicam.cs.agricultural_platform.models.user.cart;
 
 import it.unicam.cs.agricultural_platform.models.Content;
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class CartItem {
@@ -21,6 +23,7 @@ public class CartItem {
 
     @ManyToOne
     @JoinColumn(name = "wrappee_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Content wrappee;
 
     @ManyToOne

@@ -1,6 +1,8 @@
 package it.unicam.cs.agricultural_platform.models.product;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
 public class ProductInPacket {
@@ -11,10 +13,12 @@ public class ProductInPacket {
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "packet_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private ProductPacket packet;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "product_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     private int quantity;

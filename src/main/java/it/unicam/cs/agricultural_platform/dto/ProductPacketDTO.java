@@ -51,7 +51,7 @@ public class ProductPacketDTO extends ContentDTO {
 
         List<ProductInPacketDTO> productInPacketsIds = new ArrayList<>();
         for(var productInPacket : productPacket.getProductsInPacket()) {
-            ProductInPacketDTO.fromProductInPacket(productInPacket);
+            productInPacketsIds.add(ProductInPacketDTO.fromProductInPacket(productInPacket));
         }
 
         dto.setProductsInPacket(productInPacketsIds);

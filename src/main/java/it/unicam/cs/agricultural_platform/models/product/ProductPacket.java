@@ -52,6 +52,12 @@ public class ProductPacket extends Content {
     }
 
     public void setProductsInPacket(List<ProductInPacket> productsInPacket) {
-        this.productsInPacket = productsInPacket;
+        this.productsInPacket.clear();
+        if (productsInPacket != null) {
+            for (ProductInPacket pip : productsInPacket) {
+                pip.setPacket(this);
+                this.productsInPacket.add(pip);
+            }
+        }
     }
 }

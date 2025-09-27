@@ -51,7 +51,7 @@ public class ProductPacketService {
             productPacket.setDescription(updatedProductPacket.getDescription());
         }
 
-        if (updatedProductPacket.getProductsInPacket() != null && !updatedProductPacket.getProductsInPacket().isEmpty()) {
+        if (updatedProductPacket.getProductsInPacket() != null) {
             productPacket.setProductsInPacket(updatedProductPacket.getProductsInPacket());
         }
 
