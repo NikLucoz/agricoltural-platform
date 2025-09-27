@@ -1,9 +1,10 @@
 {
 	"info": {
-		"_postman_id": "b8958f25-79a2-4e8b-9314-de2079e1516f",
+		"_postman_id": "a87d48c5-0852-4613-8c8e-086e48e43484",
 		"name": "AgricolturalPlatform",
 		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
-		"_exporter_id": "30714248"
+		"_exporter_id": "48838321",
+		"_collection_link": "https://kilobytezero.postman.co/workspace/agricoltural-platform~7d158dc0-fb3e-41a3-9c45-eaf563928c20/collection/30714248-a87d48c5-0852-4613-8c8e-086e48e43484?action=share&source=collection_link&creator=48838321"
 	},
 	"item": [
 		{
@@ -198,6 +199,497 @@
 							"raw": "{\r\n  \"name\": \"Sample Event\",\r\n  \"description\": \"This is a sample description for the event.\",\r\n  \"localDateTime\": \"2026-10-01T10:00:00\",\r\n  \"place\": \"Sample Place\",\r\n  \"eventType\": \"FAIR\",\r\n  \"participants\": []\r\n}\r\n"
 						},
 						"url": "localhost:8080/events/2/participants"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MarketTest",
+			"item": [
+				{
+					"name": "RemoveItemFromUserCart",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contentId\" : 1,\r\n    \"userId\" : 1,\r\n    \"quantity\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/market/removeFromCart"
+					},
+					"response": []
+				},
+				{
+					"name": "addItemToUserCart",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contentId\" : 1,\r\n    \"userId\" : 1,\r\n    \"quantity\" : 2\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/market/addToCart"
+					},
+					"response": []
+				},
+				{
+					"name": "updateContentMarketData",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"contentId\" : 1,\r\n    \"price\" : 13.50,\r\n    \"stockQuantity\" : 34\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/market/updateContentMarketData"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Approved and Not Approved",
+					"item": [
+						{
+							"name": "getApprovedProducts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/approved"
+							},
+							"response": []
+						},
+						{
+							"name": "getNotApprovedProducts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/notApproved"
+							},
+							"response": []
+						},
+						{
+							"name": "getApprovedProductById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/approved/1"
+							},
+							"response": []
+						},
+						{
+							"name": "getNotApprovedProductById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/notApproved/1"
+							},
+							"response": []
+						},
+						{
+							"name": "getAllApprovedProductsByUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/approved/user/1"
+							},
+							"response": []
+						},
+						{
+							"name": "getAllNotApprovedProductsByUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/notApproved/user/1"
+							},
+							"response": []
+						},
+						{
+							"name": "setProductApprovedStatus",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "true",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:8080/products/2/setApproveStatus"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Review Needed",
+					"item": [
+						{
+							"name": "getReviewNeededProducts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/reviewNeeded"
+							},
+							"response": []
+						},
+						{
+							"name": "getAllReviewNeededProductsByUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/products/reviewNeeded/user/1"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getProducts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/products/"
+					},
+					"response": []
+				},
+				{
+					"name": "getProductById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/products/2"
+					},
+					"response": []
+				},
+				{
+					"name": "getProductsByFilter",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/products?filter=test",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "filter",
+									"value": "test"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "getProductsByUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/products/user/1"
+					},
+					"response": []
+				},
+				{
+					"name": "updateProduct",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": "localhost:8080/products/1/update"
+					},
+					"response": [
+						{
+							"name": "Mela Bio",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\" : \"Mela Bio\",\r\n    \"description\" : \"Mela gialla Gold\",\r\n    \"approved\" : false,\r\n    \"reviewNeeded\" : true,\r\n    \"price\" : 1.20,\r\n    \"stockQuantity\" : 30,\r\n    \"authorId\" : 1,\r\n    \"certificates\" : \"BIO-IT-12345\",\r\n    \"processes\" : \"Raccolta a mano, selezione, confezionamento\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:8080/products/2/update"
+							},
+							"_postman_previewlanguage": "Text",
+							"header": [],
+							"cookie": [],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "addProduct",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/products/add"
+					},
+					"response": [
+						{
+							"name": "Mela",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\" : \"Mela\",\r\n    \"description\" : \"Mela gialla Gold\",\r\n    \"approved\" : false,\r\n    \"reviewNeeded\" : true,\r\n    \"price\" : 1.20,\r\n    \"stockQuantity\" : 30,\r\n    \"authorId\" : 1,\r\n    \"certificates\" : \"BIO-IT-12345\",\r\n    \"processes\" : \"Raccolta a mano, selezione, confezionamento\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:8080/products/add"
+							},
+							"_postman_previewlanguage": "Text",
+							"header": [],
+							"cookie": [
+								{
+									"expires": "Invalid Date",
+									"domain": "",
+									"path": ""
+								}
+							],
+							"body": ""
+						}
+					]
+				},
+				{
+					"name": "deleteProduct",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8080/products/1/delete"
+					},
+					"response": []
+				}
+			],
+			"description": "La request _getProductsByFilter_ restituisce l'errore 400 \"BAD_REQUEST\", poiché la lista restituita è nulla (DA VEDERE)\n\nLa stessa cosa vale per la request _getApprovedProductById_ ed altre request simili"
+		},
+		{
+			"name": "ProductPacket",
+			"item": [
+				{
+					"name": "Approved and Not Approved",
+					"item": [
+						{
+							"name": "getApprovedProductPackets",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/approved"
+							},
+							"response": []
+						},
+						{
+							"name": "getNotApprovedProductPackets",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/notApproved"
+							},
+							"response": []
+						},
+						{
+							"name": "getApprovedProductProductPacketsById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/approved/1"
+							},
+							"response": []
+						},
+						{
+							"name": "getNotApprovedProductPacketsById",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/notApproved/1"
+							},
+							"response": []
+						},
+						{
+							"name": "getAllApprovedProductPacketsByUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/approved/user/1"
+							},
+							"response": []
+						},
+						{
+							"name": "getAllNotApprovedProductPacketsByUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/notApproved/user/1"
+							},
+							"response": []
+						},
+						{
+							"name": "setProductPacketsApprovedStatus",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "true",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "localhost:8080/productpackets/2/setApproveStatus"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Review Needed",
+					"item": [
+						{
+							"name": "getReviewNeededProductPackets",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/reviewNeeded"
+							},
+							"response": []
+						},
+						{
+							"name": "getAllReviewNeededProductPacketsByUser",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "localhost:8080/productpackets/reviewNeeded/user/1"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "getProductPackets",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/productpackets/"
+					},
+					"response": []
+				},
+				{
+					"name": "getProductPacketsById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/productpackets/2"
+					},
+					"response": []
+				},
+				{
+					"name": "getProductPacketsByUser",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": "localhost:8080/productpackets/user/1"
+					},
+					"response": []
+				},
+				{
+					"name": "updateProductPackets",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Cesto di Frutta Bio Modificato\",\r\n  \"description\": \"Un pacchetto contenente frutta biologica di stagione\",\r\n  \"approved\": true,\r\n  \"reviewNeeded\": false,\r\n  \"price\": 24.99,\r\n  \"stockQuantity\": 15,\r\n  \"authorId\": 1,\r\n  \"productsInPacket\": []\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/productpackets/7/update"
+					},
+					"response": []
+				},
+				{
+					"name": "addProductPackets",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Cesto di Frutta Bio\",\r\n  \"description\": \"Un pacchetto contenente frutta biologica di stagione\",\r\n  \"approved\": true,\r\n  \"reviewNeeded\": false,\r\n  \"price\": 24.99,\r\n  \"stockQuantity\": 15,\r\n  \"authorId\": 1,\r\n  \"productsInPacket\": [\r\n    {\r\n      \"productId\": 3,\r\n      \"quantity\": 3\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "localhost:8080/productpackets/add"
+					},
+					"response": []
+				},
+				{
+					"name": "deleteProductPackets",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": "localhost:8080/productpackets/6/delete"
 					},
 					"response": []
 				}
