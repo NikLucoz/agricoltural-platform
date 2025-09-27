@@ -18,14 +18,14 @@ public class MarketFacade {
     private UserService userService;
 
     public boolean addItemToUserCart(long userId, long id, int quantity){
-        if(!userService.existsUser(id)) return false;
-        var user = userService.getUserById(id);
+        if(!userService.existsUser(userId)) return false;
+        var user = userService.getUserById(userId);
         return marketService.addItemToUserCart(user, id, quantity);
     }
 
     public boolean removeItemFromUserCart(long userId, long id, int quantity){
-        if(!userService.existsUser(id)) return false;
-        var user = userService.getUserById(id);
+        if(!userService.existsUser(userId)) return false;
+        var user = userService.getUserById(userId);
         return marketService.removeItemFromUserCart(user, id, quantity);
     }
 

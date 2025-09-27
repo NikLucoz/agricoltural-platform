@@ -67,7 +67,7 @@ public class ProductController {
     // === APPROVED ===
 
     @GetMapping("/approved")
-    public ResponseEntity<List<? extends ContentDTO>> getApprovedProducts(){
+    public ResponseEntity<List<? extends ContentDTO>> getAllApprovedProducts(){
         List<? extends Content> productsList = contentFacade.getAllApprovedContents("product");
         if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -106,7 +106,7 @@ public class ProductController {
     // === NOT APPROVED ===
 
     @GetMapping("/notApproved")
-    public ResponseEntity<List<? extends ContentDTO>>  getNotApprovedProducts(){
+    public ResponseEntity<List<? extends ContentDTO>>  getAllNotApprovedProducts(){
         List<? extends Content> productsList = contentFacade.getAllNotApprovedContents("product");
         if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -126,7 +126,7 @@ public class ProductController {
     }
 
     @GetMapping("/notApproved/user/{userId}")
-    public ResponseEntity<List<? extends ContentDTO>> getNotApprovedProductsByUser(@PathVariable long userId){
+    public ResponseEntity<List<? extends ContentDTO>> getAllNotApprovedProductsByUser(@PathVariable long userId){
         List<? extends Content> userProductList = contentFacade.getAllNotApprovedContentsByUser(userId, "product");
         if(userProductList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -140,7 +140,7 @@ public class ProductController {
     // === REVIEW NEEDED ===
 
     @GetMapping("/reviewNeeded")
-    public ResponseEntity<List<? extends ContentDTO>> getReviewNeededProducts(){
+    public ResponseEntity<List<? extends ContentDTO>> getAllReviewNeededProducts(){
         List<? extends Content> productsList = contentFacade.getAllReviewNeededContents("product");
         if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 

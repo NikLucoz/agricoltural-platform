@@ -7,7 +7,6 @@ import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
-import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
@@ -209,7 +208,7 @@ public class ContentFacade {
 
     public ProductPacket getProductPacket(long id) {return productPacketService.getProductPacket(id);}
 
-    public List<ProductPacket> getUserProductPackets(long userId) {
+    public List<ProductPacket> getProductPacketsByUser(long userId) {
         if(userService.existsUser(userId)){
             User user = userService.getUserById(userId);
             return productPacketService.getProductPacketsByUser(user);
