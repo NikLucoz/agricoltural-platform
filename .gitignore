@@ -35,3 +35,5 @@ out/
 
 ### VS Code ###
 .vscode/
+/data/agriculturalplatform.mv.db
+/data/agriculturalplatform.trace.db
