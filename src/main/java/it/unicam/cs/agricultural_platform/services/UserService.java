@@ -92,8 +92,7 @@ public class UserService {
         return true;
     }
 
-
-    public boolean updatePassword(User user, String oldPassword, String newPassword) {
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
         if(oldPassword.equals(newPassword)) return false;
         if(!oldPassword.isBlank() && newPassword != null && !newPassword.isBlank()) {
             if(user.getPassword().equals(oldPassword)) {
@@ -107,12 +106,5 @@ public class UserService {
 
     public boolean existsUserByUsername(String username) {
         return userRepository.existsByUsername(username);
-    }
-
-    public boolean changePassword(User user, String oldPassword, String newPassword) {
-        if(user == null) return false;
-        if(!oldPassword.equals(newPassword)) return false;
-        user.setPassword(newPassword);
-        return true;
     }
 }

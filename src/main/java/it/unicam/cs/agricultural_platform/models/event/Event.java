@@ -24,7 +24,6 @@ public class Event {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Partecipation> participants;
 
-
     public Event(long id, String name, String description, LocalDateTime localDateTime, String place, EventType eventType) {
         this.name = name;
         this.description = description;

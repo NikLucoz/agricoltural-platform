@@ -7,6 +7,7 @@ import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
+import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
@@ -25,6 +26,7 @@ public class ContentFacade {
     private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
+    private ContentRepository contentRepository;
 
     //region CONTENT METHODS
 
@@ -153,52 +155,6 @@ public class ContentFacade {
         }
         return new ArrayList<>();
     }
-
-    //    public List<Product> getAllApprovedProducts() {
-//        return productService.getAllApprovedProducts();
-//    }
-//
-//
-//
-//    public Product getApprovedProduct(long id) {
-//        return productService.getApprovedProduct(id);
-//    }
-//
-//    public List<Product> getAllApprovedProductsByUser(long userId) {
-//        if(userService.existsUser(userId)){
-//            User user = userService.getUserById(userId);
-//            return productService.getAllApprovedProductsByUser(user);
-//        }
-//        return new ArrayList<>();
-//    }
-
-//    public List<Product> getAllNotApprovedProducts() {
-//        return productService.getAllNotApprovedProducts();
-//    }
-//
-//    public Product getNotApprovedProduct(long id) {
-//        return productService.getNotApprovedProduct(id);
-//    }
-//
-//    public List<Product> getAllNotApprovedProductsByUser(long userId) {
-//        if(userService.existsUser(userId)){
-//            User user = userService.getUserById(userId);
-//            return productService.getAllNotApprovedProductsByUser(user);
-//        }
-//        return new ArrayList<>();
-//    }
-//
-//    public List<Product> getAllReviewNeededProducts() {
-//        return productService.getAllReviewNeededProducts();
-//    }
-//
-//    public List<Product> getAllReviewNeededProductsByUser(long userId) {
-//        if(userService.existsUser(userId)){
-//            User user = userService.getUserById(userId);
-//            return productService.getAllReviewNeededProductsByUser(user);
-//        }
-//        return new ArrayList<>();
-//    }
 
     //endregion
 

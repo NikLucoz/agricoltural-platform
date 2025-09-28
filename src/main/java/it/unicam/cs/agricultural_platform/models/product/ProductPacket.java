@@ -18,7 +18,6 @@ public class ProductPacket extends Content {
 
     }
 
-
     public List<ProductInPacket> getProductsInPacket() {
         return productsInPacket;
     }
