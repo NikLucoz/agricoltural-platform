@@ -113,4 +113,12 @@ public class User {
     public boolean hasUserType(UserType userType) {
         return userTypes.contains(userType);
     }
+
+    public List<UserType> getUserTypes() {
+        return userTypes;
+    }
+
+    public void setUserTypes(List<UserType> userTypes) {
+        this.userTypes = userTypes;
+    }
 }
