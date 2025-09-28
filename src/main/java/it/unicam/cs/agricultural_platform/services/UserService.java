@@ -11,8 +11,12 @@ import java.util.List;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
+
+
+    // === GENERIC ===
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -37,6 +41,25 @@ public class UserService {
     public boolean hasUserType(long id, UserType type) {
         return userRepository.findById(id).hasUserType(type);
     }
+
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
+        if(oldPassword.equals(newPassword)) return false;
+        if(!oldPassword.isBlank() && newPassword != null && !newPassword.isBlank()) {
+            if(user.getPassword().equals(oldPassword)) {
+                user.setPassword(newPassword);
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean existsUserByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+
+    // === CRUD ===
 
     public boolean addUser(User user) {
         try {
@@ -92,19 +115,22 @@ public class UserService {
         return true;
     }
 
-    public boolean changePassword(User user, String oldPassword, String newPassword) {
-        if(oldPassword.equals(newPassword)) return false;
-        if(!oldPassword.isBlank() && newPassword != null && !newPassword.isBlank()) {
-            if(user.getPassword().equals(oldPassword)) {
-                user.setPassword(newPassword);
-                userRepository.save(user);
-                return true;
-            }
-        }
-        return false;
+
+    // === MANAGEMENT ===
+
+    public boolean setUserType(User user, UserType userType) {
+        if(hasUserType(user.getId(), userType)) return false;
+
+        user.addUserType(userType);
+        userRepository.save(user);
+        return true;
     }
 
-    public boolean existsUserByUsername(String username) {
-        return userRepository.existsByUsername(username);
+    public boolean removeUserType(User user, UserType userType) {
+        if(!hasUserType(user.getId(), userType)) return false;
+
+        user.removeUserType(userType);
+        userRepository.save(user);
+        return true;
     }
 }

@@ -35,7 +35,7 @@ public class User {
     @CollectionTable(name = "users_user_types", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "user_types")
-    private List<UserType> userTypes = new ArrayList<UserType>();
+    private List<UserType> userTypes = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "user_cart_id")
@@ -120,5 +120,13 @@ public class User {
 
     public void setUserTypes(List<UserType> userTypes) {
         this.userTypes = userTypes;
+    }
+
+    public void addUserType(UserType userType) {
+        this.userTypes.add(userType);
+    }
+
+    public void removeUserType(UserType userType){
+        this.userTypes.remove(userType);
     }
 }

@@ -4,11 +4,13 @@ import it.unicam.cs.agricultural_platform.dto.PasswordChangeRequestDTO;
 import it.unicam.cs.agricultural_platform.dto.UserDTO;
 import it.unicam.cs.agricultural_platform.facades.UserFacade;
 import it.unicam.cs.agricultural_platform.models.user.User;
+import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.models.user.cart.UserCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,8 +18,12 @@ import java.util.List;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserFacade userFacade;
+
+
+    // === GENERIC ===
 
     @GetMapping("/{id}")
     public ResponseEntity<User> getUser(@PathVariable int id) {
@@ -50,6 +56,25 @@ public class UserController {
         return new ResponseEntity<>(userCart, HttpStatus.OK);
     }
 
+    @PutMapping("/{id}/changePassword")
+    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        if(!userFacade.updateUserPassword(id, passwordChangeRequestDTO)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
+    // === CRUD ===
+
+    @PostMapping("/register")
+    public ResponseEntity<Object> addUser(@RequestBody UserDTO user) {
+        if(!userFacade.addUser(user)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @PutMapping("/{id}/update")
     public ResponseEntity<Object> updateUser(@PathVariable long id, @RequestBody UserDTO updatedUser) {
         if(!userFacade.updateUser(id, updatedUser)) {
@@ -66,17 +91,20 @@ public class UserController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Object> addUser(@RequestBody UserDTO user) {
-        if(!userFacade.addUser(user)) {
+
+    // === MANAGEMENT ===
+
+    @PostMapping("/{id}/addUserType")
+    public ResponseEntity<Object> addUserType(@PathVariable long id, @RequestBody UserType userType){
+        if(!userFacade.setUserType(id, userType)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/changePassword")
-    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        if(!userFacade.updateUserPassword(id, passwordChangeRequestDTO)) {
+    @DeleteMapping("/{id}/removeUserType")
+    public ResponseEntity<Object> removeUserType(@PathVariable long id, @RequestBody UserType userType){
+        if(!userFacade.removeUserType(id, userType)){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);

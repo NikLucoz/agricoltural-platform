@@ -2,6 +2,7 @@ package it.unicam.cs.agricultural_platform.facades;
 
 import it.unicam.cs.agricultural_platform.dto.PasswordChangeRequestDTO;
 import it.unicam.cs.agricultural_platform.dto.UserDTO;
+import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.cart.UserCart;
@@ -18,6 +19,9 @@ public class UserFacade {
     @Autowired
     private ContentFacade contentFacade;
 
+
+    // === GENERIC ===
+
     public List<User> getUsers() {
         return userService.getUsers();
     }
@@ -29,6 +33,15 @@ public class UserFacade {
     public UserCart getUserCart(long id) {
         return userService.getUserCart(id);
     }
+
+    public boolean updateUserPassword(long id, PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        if(!userService.existsUser(id)) return false;
+        var user = userService.getUserById(id);
+        return userService.changePassword(user, passwordChangeRequestDTO.getOldPassword(), passwordChangeRequestDTO.getNewPassword());
+    }
+
+
+    // === CRUD ===
 
     public boolean addUser(UserDTO userDTO) {
         var user = UserDTO.fromDTO(userDTO);
@@ -56,9 +69,23 @@ public class UserFacade {
         return userService.updateUser(id, updatedUser);
     }
 
-    public boolean updateUserPassword(long id, PasswordChangeRequestDTO passwordChangeRequestDTO) {
+
+    // === MANAGEMENT ===
+
+    public boolean setUserType(long id, UserType userType) {
         if(!userService.existsUser(id)) return false;
         var user = userService.getUserById(id);
-        return userService.changePassword(user, passwordChangeRequestDTO.getOldPassword(), passwordChangeRequestDTO.getNewPassword());
+        if(user == null) return false;
+
+        return userService.setUserType(user, userType);
     }
+
+    public boolean removeUserType(long id, UserType userType) {
+        if(!userService.existsUser(id)) return false;
+        var user = userService.getUserById(id);
+        if(user == null) return false;
+
+        return userService.removeUserType(user, userType);
+    }
+
 }
