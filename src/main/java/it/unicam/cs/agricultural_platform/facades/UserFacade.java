@@ -50,6 +50,8 @@ public class UserFacade {
     }
 
     public boolean deleteUser(long id) {
+        if(!userService.existsUser(id)) return false;
+
         var userProducts = contentFacade.getProductsByUser(id);
         var userProductPackets = contentFacade.getProductPacketsByUser(id);
 

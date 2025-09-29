@@ -73,15 +73,12 @@ public class UserService {
     }
 
     public boolean deleteUser(long id) {
-        if (userRepository.existsById(id)) {
-            try {
-                userRepository.deleteById(id);
-                return true;
-            } catch (Exception e) {
-                return false;
-            }
+        try {
+            userRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
     }
 
     public boolean updateUser(long id, User updatedUser) {
