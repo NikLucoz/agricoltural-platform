@@ -92,7 +92,6 @@ public class EventDTO {
 
     public static Event fromDTO(EventDTO eventDTO) {
         Event event = new Event();
-        event.setId(eventDTO.getId());
         event.setName(eventDTO.getName());
         event.setDescription(eventDTO.getDescription());
         event.setLocalDateTime(eventDTO.getLocalDateTime());
