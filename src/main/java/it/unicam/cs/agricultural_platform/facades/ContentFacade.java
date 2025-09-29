@@ -1,16 +1,18 @@
 package it.unicam.cs.agricultural_platform.facades;
 
-import it.unicam.cs.agricultural_platform.dto.ProductDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
-import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
+import it.unicam.cs.agricultural_platform.models.user.UserType;
+import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,10 @@ public class ContentFacade {
     private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     //region CONTENT METHODS
 
@@ -132,7 +138,11 @@ public class ContentFacade {
 
     public boolean addProduct(ProductDTO productDTO) {
         var author = userService.getUserById(productDTO.getAuthorId());
+        if(!author.hasUserType(UserType.PRODUCER)) return false;
+
         var product = ProductDTO.fromDTO(productDTO, author);
+        product.setApproved(false);
+        product.setReviewNeeded(false);
         return productService.addProduct(product);
     }
 
@@ -155,52 +165,6 @@ public class ContentFacade {
         return new ArrayList<>();
     }
 
-    //    public List<Product> getAllApprovedProducts() {
-//        return productService.getAllApprovedProducts();
-//    }
-//
-//
-//
-//    public Product getApprovedProduct(long id) {
-//        return productService.getApprovedProduct(id);
-//    }
-//
-//    public List<Product> getAllApprovedProductsByUser(long userId) {
-//        if(userService.existsUser(userId)){
-//            User user = userService.getUserById(userId);
-//            return productService.getAllApprovedProductsByUser(user);
-//        }
-//        return new ArrayList<>();
-//    }
-
-//    public List<Product> getAllNotApprovedProducts() {
-//        return productService.getAllNotApprovedProducts();
-//    }
-//
-//    public Product getNotApprovedProduct(long id) {
-//        return productService.getNotApprovedProduct(id);
-//    }
-//
-//    public List<Product> getAllNotApprovedProductsByUser(long userId) {
-//        if(userService.existsUser(userId)){
-//            User user = userService.getUserById(userId);
-//            return productService.getAllNotApprovedProductsByUser(user);
-//        }
-//        return new ArrayList<>();
-//    }
-//
-//    public List<Product> getAllReviewNeededProducts() {
-//        return productService.getAllReviewNeededProducts();
-//    }
-//
-//    public List<Product> getAllReviewNeededProductsByUser(long userId) {
-//        if(userService.existsUser(userId)){
-//            User user = userService.getUserById(userId);
-//            return productService.getAllReviewNeededProductsByUser(user);
-//        }
-//        return new ArrayList<>();
-//    }
-
     //endregion
 
     //region PRODUCT PACKET METHODS
@@ -209,7 +173,7 @@ public class ContentFacade {
 
     public ProductPacket getProductPacket(long id) {return productPacketService.getProductPacket(id);}
 
-    public List<ProductPacket> getUserProductPackets(long userId) {
+    public List<ProductPacket> getProductPacketsByUser(long userId) {
         if(userService.existsUser(userId)){
             User user = userService.getUserById(userId);
             return productPacketService.getProductPacketsByUser(user);
@@ -219,6 +183,8 @@ public class ContentFacade {
 
     public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
         var author = userService.getUserById(productPacketDTO.getAuthorId());
+        if(!author.hasUserType(UserType.DISTRIBUTOR)) return false;
+
         var productPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
 
         var productsInPacket = new ArrayList<ProductInPacket>();
@@ -234,7 +200,8 @@ public class ContentFacade {
         }
 
         productPacket.setProductsInPacket(productsInPacket);
-
+        productPacket.setApproved(false);
+        productPacket.setReviewNeeded(false);
         return productPacketService.addProductPacket(productPacket);
     }
 
@@ -265,5 +232,17 @@ public class ContentFacade {
         return productPacketService.getProductInPackets(id);
     }
 
+    public List<ProductPacket> getAllApprovedProductPackets(String filter) {
+        if(filter != null && !filter.isBlank()) {
+            return productPacketService.getAllApprovedProductPackets(filter);
+        }
+        return new ArrayList<>();
+    }
+
     //endregion
+
+    @Transactional
+    public void removeOrphanContentFromCartItems(Content content) {
+        cartItemRepository.deleteByContent(content);
+    }
 }

@@ -43,8 +43,7 @@ public class EventService {
         }
     }
 
-    public boolean updateEvent(long id, Event updateEvent){
-        var event = eventRepository.findEventById(id);
+    public boolean updateEvent(Event event, Event updateEvent){
         if(updateEvent == null || event == null) return false;
 
         if(updateEvent.getName() != null && !updateEvent.getName().isBlank()) {

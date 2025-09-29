@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.services;
 
+import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.repositories.UserRepository;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
@@ -11,8 +12,12 @@ import java.util.List;
 
 @Service
 public class UserService {
+
     @Autowired
     private UserRepository userRepository;
+
+
+    // === GENERIC ===
 
     public List<User> getUsers() {
         return userRepository.findAll();
@@ -36,5 +41,99 @@ public class UserService {
 
     public boolean hasUserType(long id, UserType type) {
         return userRepository.findById(id).hasUserType(type);
+    }
+
+    public boolean changePassword(User user, String oldPassword, String newPassword) {
+        if(oldPassword.equals(newPassword)) return false;
+        if(!oldPassword.isBlank() && newPassword != null && !newPassword.isBlank()) {
+            if(user.getPassword().equals(oldPassword)) {
+                user.setPassword(newPassword);
+                userRepository.save(user);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean existsUserByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+
+    // === CRUD ===
+
+    public boolean addUser(User user) {
+        try {
+            user.createCart();
+            userRepository.save(user);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean deleteUser(long id) {
+        try {
+            userRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public boolean updateUser(long id, User updatedUser) {
+        var user = userRepository.findById(id);
+        if(updatedUser == null) return false;
+        if (user == null) return false;
+
+        if (updatedUser.getName() != null && !updatedUser.getName().isBlank()) {
+            user.setName(updatedUser.getName());
+        }
+
+        if (updatedUser.getSurname() != null && !updatedUser.getSurname().isBlank()) {
+            user.setSurname(updatedUser.getSurname());
+        }
+
+        if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
+            user.setEmail(updatedUser.getEmail());
+        }
+
+        if (updatedUser.getCodFis() != null && !updatedUser.getCodFis().isBlank()) {
+            user.setCodFis(updatedUser.getCodFis());
+        }
+
+        if (updatedUser.getpIva() != null && !updatedUser.getpIva().isBlank()) {
+            user.setpIva(updatedUser.getpIva());
+        }
+
+        if (updatedUser.getUsername() != null && !updatedUser.getUsername().isBlank()) {
+            user.setUsername(updatedUser.getUsername());
+        }
+
+        if (updatedUser.getUserTypes() != null && !updatedUser.getUserTypes().isEmpty()) {
+            user.setUserTypes(updatedUser.getUserTypes());
+        }
+
+        userRepository.save(user);
+        return true;
+    }
+
+
+    // === MANAGEMENT ===
+
+    public boolean setUserType(User user, UserType userType) {
+        if(hasUserType(user.getId(), userType)) return false;
+
+        user.addUserType(userType);
+        userRepository.save(user);
+        return true;
+    }
+
+    public boolean removeUserType(User user, UserType userType) {
+        if(!hasUserType(user.getId(), userType)) return false;
+
+        user.removeUserType(userType);
+        userRepository.save(user);
+        return true;
     }
 }

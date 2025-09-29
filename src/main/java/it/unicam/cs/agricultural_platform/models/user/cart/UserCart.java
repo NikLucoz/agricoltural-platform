@@ -1,6 +1,7 @@
 package it.unicam.cs.agricultural_platform.models.user.cart;
 
 import it.unicam.cs.agricultural_platform.models.Content;
+import it.unicam.cs.agricultural_platform.models.user.User;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -11,8 +12,20 @@ public class UserCart {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CartItem> items;
+
+    public UserCart(User user) {
+        this.user = user;
+    }
+
+    public UserCart() {
+
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -58,5 +71,17 @@ public class UserCart {
             return true;
         }
         return false;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<CartItem> getItems() {
+        return items;
     }
 }

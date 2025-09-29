@@ -108,4 +108,8 @@ public class ProductPacketService {
         var productPacket = productPacketRepository.findById(id);
         return productPacket.getProductsInPacket();
     }
+
+    public List<ProductPacket> getAllApprovedProductPackets(String filter) {
+        return productPacketRepository.findAllApprovedProductPacketsByFilter(filter);
+    }
 }

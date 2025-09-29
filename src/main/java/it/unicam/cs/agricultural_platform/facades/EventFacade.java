@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.facades;
 
+import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import it.unicam.cs.agricultural_platform.models.user.User;
@@ -31,7 +32,8 @@ public class EventFacade {
         return eventService.getEvent(name);
     }
 
-    public boolean addEvent(Event event) {
+    public boolean addEvent(EventDTO eventDTO) {
+        var event = eventDTO.fromDTO(eventDTO);
         return eventService.addEvent(event);
     }
 
@@ -39,8 +41,11 @@ public class EventFacade {
         return eventService.deleteEvent(id);
     }
 
-    public boolean updateEvent(long id, Event event) {
-        return eventService.updateEvent(id, event);
+    public boolean updateEvent(long id, EventDTO eventDTO) {
+        var original = eventService.getEvent(id);
+        var updatedEvent = EventDTO.fromDTO(eventDTO);
+
+        return eventService.updateEvent(original, updatedEvent);
     }
 
     // ==== Events Participants ====

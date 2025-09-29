@@ -35,14 +35,21 @@ public class User {
     @CollectionTable(name = "users_user_types", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "user_types")
-    private List<UserType> userTypes = new ArrayList<UserType>();
+    private List<UserType> userTypes = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "user_cart_id")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserCart userCart;
 
     public UserCart getUserCart() {
         return userCart;
+    }
+
+    public void createCart() {
+        if (this.userCart == null) {
+            UserCart cart = new UserCart();
+            cart.setUser(this);
+            this.userCart = cart;
+        }
     }
 
     public void setUserCart(UserCart userCart) {
@@ -112,5 +119,21 @@ public class User {
 
     public boolean hasUserType(UserType userType) {
         return userTypes.contains(userType);
+    }
+
+    public List<UserType> getUserTypes() {
+        return userTypes;
+    }
+
+    public void setUserTypes(List<UserType> userTypes) {
+        this.userTypes = userTypes;
+    }
+
+    public void addUserType(UserType userType) {
+        this.userTypes.add(userType);
+    }
+
+    public void removeUserType(UserType userType){
+        this.userTypes.remove(userType);
     }
 }

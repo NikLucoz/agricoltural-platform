@@ -1,7 +1,7 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
-import it.unicam.cs.agricultural_platform.dto.ItemCartOperationDTO;
-import it.unicam.cs.agricultural_platform.dto.UpdateMarketDataDTO;
+import it.unicam.cs.agricultural_platform.dto.user.ItemCartOperationDTO;
+import it.unicam.cs.agricultural_platform.dto.content.UpdateMarketDataDTO;
 import it.unicam.cs.agricultural_platform.facades.MarketFacade;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

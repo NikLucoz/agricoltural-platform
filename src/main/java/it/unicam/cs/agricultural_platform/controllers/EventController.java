@@ -1,13 +1,17 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
+import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
+import it.unicam.cs.agricultural_platform.dto.event.PartecipationDTO;
 import it.unicam.cs.agricultural_platform.facades.EventFacade;
 import it.unicam.cs.agricultural_platform.models.event.Event;
+import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/events")
@@ -17,28 +21,38 @@ public class EventController {
     private EventFacade eventFacade;
 
     @GetMapping("/")
-    public ResponseEntity<List<Event>> getEvents() {
-        List<Event> userList = eventFacade.getEvents();
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+    public ResponseEntity<List<EventDTO>> getEvents() {
+        List<Event> eventList = eventFacade.getEvents();
+        if(eventList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<EventDTO> eventDTOList = eventList.stream().map(EventDTO::fromEvent).collect(Collectors.toList());
+
+        return new ResponseEntity<>(eventDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Event> getEvent(@PathVariable long id) {
+    public ResponseEntity<EventDTO> getEvent(@PathVariable long id) {
         Event event = eventFacade.getEvent(id);
         if(event == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(event, HttpStatus.OK);
+
+        EventDTO eventDTO = EventDTO.fromEvent(event);
+
+        return new ResponseEntity<>(eventDTO, HttpStatus.OK);
     }
 
     @GetMapping(params = "name")
-    public ResponseEntity<Event> getEventByName(@RequestParam String name) {
+    public ResponseEntity<EventDTO> getEventByName(@RequestParam String name) {
         Event event = eventFacade.getEvent(name);
         if(event == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        return new ResponseEntity<>(event, HttpStatus.OK);
+
+        EventDTO eventDTO = EventDTO.fromEvent(event);
+
+        return new ResponseEntity<>(eventDTO, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addEvent(@RequestBody Event event) {
-        if(!eventFacade.addEvent(event)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> addEvent(@RequestBody EventDTO eventDTO) {
+        if(!eventFacade.addEvent(eventDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -49,16 +63,21 @@ public class EventController {
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<Object> updateEvent(@PathVariable long id, @RequestBody Event event) {
-        if(!eventFacade.updateEvent(id, event)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> updateEvent(@PathVariable long id, @RequestBody EventDTO eventDTO) {
+        if(!eventFacade.updateEvent(id, eventDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // ==== Events Participants ====
 
     @GetMapping("/{id}/participants")
-    public ResponseEntity<Object> getParticipants(@PathVariable long id) {
-        return new ResponseEntity<>(eventFacade.getParticipants(id), HttpStatus.OK);
+    public ResponseEntity<List<PartecipationDTO>> getParticipants(@PathVariable long id) {
+        List<Partecipation> partecipationList = eventFacade.getParticipants(id);
+        if(partecipationList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<PartecipationDTO> partecipationDTOList = partecipationList.stream().map(PartecipationDTO::fromPartecipation).collect(Collectors.toList());
+
+        return new ResponseEntity<>(partecipationDTOList, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/participants/delete/{userId}")
