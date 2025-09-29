@@ -7,6 +7,7 @@ import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
+import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
@@ -138,6 +139,8 @@ public class ContentFacade {
 
     public boolean addProduct(ProductDTO productDTO) {
         var author = userService.getUserById(productDTO.getAuthorId());
+        if(!author.hasUserType(UserType.PRODUCER)) return false;
+
         var product = ProductDTO.fromDTO(productDTO, author);
         product.setApproved(false);
         product.setReviewNeeded(false);
@@ -181,6 +184,8 @@ public class ContentFacade {
 
     public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
         var author = userService.getUserById(productPacketDTO.getAuthorId());
+        if(!author.hasUserType(UserType.DISTRIBUTOR)) return false;
+
         var productPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
 
         var productsInPacket = new ArrayList<ProductInPacket>();
