@@ -17,6 +17,7 @@ public class CartItem {
         return id;
     }
     private int quantity;
+
     @ManyToOne
     @JoinColumn(name = "wrappee_id")
     @OnDelete(action = OnDeleteAction.CASCADE)

@@ -1,10 +1,12 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
 import it.unicam.cs.agricultural_platform.dto.ContentDTO;
+import it.unicam.cs.agricultural_platform.dto.ProductDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductInPacketDTO;
 import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
 import it.unicam.cs.agricultural_platform.models.Content;
+import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,16 @@ public class ProductPacketController {
         List<ProductPacketDTO> productPacketDTOList = productPacketsList.stream().map(ProductPacketDTO::fromProductPacket).collect(Collectors.toList());
 
         return new ResponseEntity<>(productPacketDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping(params = "filter")
+    public ResponseEntity<List<ProductPacketDTO>> getProductPackets(@RequestParam String filter){
+        List<ProductPacket> productsList = contentFacade.getAllApprovedProductPackets(filter);
+        if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<ProductPacketDTO> productDTOList = productsList.stream().map(ProductPacketDTO::fromProductPacket).collect(Collectors.toList());
+
+        return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -74,17 +86,6 @@ public class ProductPacketController {
     @GetMapping("/approved")
     public ResponseEntity<List<? extends ContentDTO>> getAllApprovedProductPackets(){
         List<? extends Content> productPacketsList = contentFacade.getAllApprovedContents("packet");
-        if(productPacketsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        List<? extends ContentDTO> productPacketDTOList = productPacketsList.stream()
-                .map(p -> ProductPacketDTO.fromProductPacket((ProductPacket) p)).collect(Collectors.toList());
-
-        return new ResponseEntity<>(productPacketDTOList, HttpStatus.OK);
-    }
-
-    @GetMapping("/approved/{filter}")
-    public ResponseEntity<List<? extends ContentDTO>> getAllApprovedProductPackets(@PathVariable String filter){
-        List<? extends Content> productPacketsList = contentFacade.getAllApprovedContents(filter);
         if(productPacketsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         List<? extends ContentDTO> productPacketDTOList = productPacketsList.stream()
@@ -138,7 +139,7 @@ public class ProductPacketController {
         return new ResponseEntity<>(productPacketDTO, HttpStatus.OK);
     }
 
-    @GetMapping("/notApproved/user/{userId}/")
+    @GetMapping("/notApproved/user/{userId}")
     public ResponseEntity<List<? extends ContentDTO>> getAllNotApprovedProductPacketsByUser(@PathVariable long userId){
         List<? extends Content> userProductPacketsList = contentFacade.getAllNotApprovedContentsByUser(userId, "packet");
         if(userProductPacketsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -153,7 +154,7 @@ public class ProductPacketController {
 
     @GetMapping("/reviewNeeded")
     public ResponseEntity<List<? extends ContentDTO>> getAllReviewNeededProductPackets(){
-        List<? extends Content> productPacketList = contentFacade.getAllReviewNeededContents("productpacket");
+        List<? extends Content> productPacketList = contentFacade.getAllReviewNeededContents("packet");
         if(productPacketList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         List<? extends ContentDTO> productPacketDTOList = productPacketList.stream().map(p -> ProductPacketDTO.fromProductPacket((ProductPacket) p)).collect(Collectors.toList());
@@ -163,7 +164,7 @@ public class ProductPacketController {
 
     @GetMapping("/reviewNeeded/user/{userId}")
     public ResponseEntity<List<? extends ContentDTO>> getAllReviewNeededProductPacketsByUser(@PathVariable long userId){
-        List<? extends Content> userProductPacketList = contentFacade.getAllReviewNeededContentsByUser(userId, "productpacket");
+        List<? extends Content> userProductPacketList = contentFacade.getAllReviewNeededContentsByUser(userId, "packet");
         if(userProductPacketList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
         List<? extends ContentDTO> userProductPacketDTOList = userProductPacketList.stream().map(p -> ProductPacketDTO.fromProductPacket((ProductPacket) p)).collect(Collectors.toList());

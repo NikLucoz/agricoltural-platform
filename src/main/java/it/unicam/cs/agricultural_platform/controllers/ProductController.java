@@ -34,7 +34,7 @@ public class ProductController {
         return new ResponseEntity<>(productDTOList, HttpStatus.OK);
     }
 
-    @GetMapping(params = "name")
+    @GetMapping(params = "filter")
     public ResponseEntity<List<ProductDTO>> getProducts(@RequestParam String filter){
         List<Product> productsList = contentFacade.getAllApprovedProducts(filter);
         if(productsList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

@@ -7,10 +7,12 @@ import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
+import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,7 +28,10 @@ public class ContentFacade {
     private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
-    private ContentRepository contentRepository;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
 
     //region CONTENT METHODS
 
@@ -134,6 +139,8 @@ public class ContentFacade {
     public boolean addProduct(ProductDTO productDTO) {
         var author = userService.getUserById(productDTO.getAuthorId());
         var product = ProductDTO.fromDTO(productDTO, author);
+        product.setApproved(false);
+        product.setReviewNeeded(false);
         return productService.addProduct(product);
     }
 
@@ -189,7 +196,8 @@ public class ContentFacade {
         }
 
         productPacket.setProductsInPacket(productsInPacket);
-
+        productPacket.setApproved(false);
+        productPacket.setReviewNeeded(false);
         return productPacketService.addProductPacket(productPacket);
     }
 
@@ -220,5 +228,17 @@ public class ContentFacade {
         return productPacketService.getProductInPackets(id);
     }
 
+    public List<ProductPacket> getAllApprovedProductPackets(String filter) {
+        if(filter != null && !filter.isBlank()) {
+            return productPacketService.getAllApprovedProductPackets(filter);
+        }
+        return new ArrayList<>();
+    }
+
     //endregion
+
+    @Transactional
+    public void removeOrphanContentFromCartItems(Content content) {
+        cartItemRepository.deleteByContent(content);
+    }
 }

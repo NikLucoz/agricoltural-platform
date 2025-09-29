@@ -54,10 +54,12 @@ public class UserFacade {
         var userProductPackets = contentFacade.getProductPacketsByUser(id);
 
         for (var userProductPacket : userProductPackets) {
+            contentFacade.removeOrphanContentFromCartItems(userProductPacket);
             contentFacade.deleteProductPacket(userProductPacket.getId());
         }
 
         for (var userProduct : userProducts) {
+            contentFacade.removeOrphanContentFromCartItems(userProduct);
             contentFacade.deleteProduct(userProduct.getId());
         }
 

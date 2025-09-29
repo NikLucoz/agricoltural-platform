@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.services;
 
+import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.repositories.UserRepository;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
