@@ -9,7 +9,7 @@ public class Partecipation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long partecipation_id;
+    private Long partecipationId;
 
     @ManyToOne
     @JoinColumn(name = "event_id")
@@ -28,8 +28,10 @@ public class Partecipation {
     public Partecipation() {}
 
     public Long getId() {
-        return partecipation_id;
+        return partecipationId;
     }
+
+    public void setId(long id){this.partecipationId = id;}
 
     public Event getEvent() {
         return event;

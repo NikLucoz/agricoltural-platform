@@ -1,5 +1,6 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
+import it.unicam.cs.agricultural_platform.dto.EventDTO;
 import it.unicam.cs.agricultural_platform.facades.EventFacade;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,8 +38,8 @@ public class EventController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Object> addEvent(@RequestBody Event event) {
-        if(!eventFacade.addEvent(event)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> addEvent(@RequestBody EventDTO eventDTO) {
+        if(!eventFacade.addEvent(eventDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -49,8 +50,8 @@ public class EventController {
     }
 
     @PutMapping("/{id}/update")
-    public ResponseEntity<Object> updateEvent(@PathVariable long id, @RequestBody Event event) {
-        if(!eventFacade.updateEvent(id, event)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> updateEvent(@PathVariable long id, @RequestBody EventDTO eventDTO) {
+        if(!eventFacade.updateEvent(id, eventDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
