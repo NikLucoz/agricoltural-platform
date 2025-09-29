@@ -76,4 +76,12 @@ public class UserCart {
     public void setUser(User user) {
         this.user = user;
     }
+
+    public User getUser() {
+        return user;
+    }
+
+    public List<CartItem> getItems() {
+        return items;
+    }
 }

@@ -1,6 +1,7 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
 import it.unicam.cs.agricultural_platform.dto.PasswordChangeRequestDTO;
+import it.unicam.cs.agricultural_platform.dto.UserCartDTO;
 import it.unicam.cs.agricultural_platform.dto.UserDTO;
 import it.unicam.cs.agricultural_platform.facades.UserFacade;
 import it.unicam.cs.agricultural_platform.models.user.User;
@@ -47,13 +48,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}/cart")
-    public ResponseEntity<UserCart> getUserCart(@PathVariable long id) {
+    public ResponseEntity<UserCartDTO> getUserCart(@PathVariable long id) {
         UserCart userCart = userFacade.getUserCart(id);
         if (userCart == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(userCart, HttpStatus.OK);
+        return new ResponseEntity<>(UserCartDTO.fromUserCart(userCart), HttpStatus.OK);
     }
 
     @PutMapping("/{id}/changePassword")
