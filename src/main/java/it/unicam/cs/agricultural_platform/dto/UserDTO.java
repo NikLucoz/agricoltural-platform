@@ -1,4 +1,4 @@
-﻿package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto;
 
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.UserType;

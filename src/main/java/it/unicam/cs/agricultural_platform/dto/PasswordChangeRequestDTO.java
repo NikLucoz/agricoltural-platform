@@ -1,4 +1,4 @@
-﻿package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto;
 
 public class PasswordChangeRequestDTO {
     private String oldPassword, newPassword;

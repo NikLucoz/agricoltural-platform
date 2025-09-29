@@ -63,6 +63,7 @@ public class UserService {
 
     public boolean addUser(User user) {
         try {
+            user.createCart();
             userRepository.save(user);
             return true;
         } catch (Exception e) {
@@ -105,6 +106,10 @@ public class UserService {
 
         if (updatedUser.getpIva() != null && !updatedUser.getpIva().isBlank()) {
             user.setpIva(updatedUser.getpIva());
+        }
+
+        if (updatedUser.getUsername() != null && !updatedUser.getUsername().isBlank()) {
+            user.setUsername(updatedUser.getUsername());
         }
 
         if (updatedUser.getUserTypes() != null && !updatedUser.getUserTypes().isEmpty()) {

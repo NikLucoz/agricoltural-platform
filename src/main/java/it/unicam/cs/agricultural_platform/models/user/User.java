@@ -37,12 +37,19 @@ public class User {
     @Column(name = "user_types")
     private List<UserType> userTypes = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "user_cart_id")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserCart userCart;
 
     public UserCart getUserCart() {
         return userCart;
+    }
+
+    public void createCart() {
+        if (this.userCart == null) {
+            UserCart cart = new UserCart();
+            cart.setUser(this);
+            this.userCart = cart;
+        }
     }
 
     public void setUserCart(UserCart userCart) {
