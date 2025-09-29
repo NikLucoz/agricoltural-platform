@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -27,24 +28,29 @@ public class UserController {
     // === GENERIC ===
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> getUser(@PathVariable int id) {
+    public ResponseEntity<UserDTO> getUser(@PathVariable int id) {
         User user = userFacade.getUser(id);
 
         if (user == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return new ResponseEntity<>(UserDTO.fromUser(user), HttpStatus.OK);
     }
 
     @GetMapping("/")
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<UserDTO>> getUsers() {
         List<User> users = userFacade.getUsers();
+        List<UserDTO> userDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDTOs.add(UserDTO.fromUser(user));
+        }
+
         if (users == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @GetMapping("/{id}/cart")

@@ -53,6 +53,7 @@ public class UserCartDTO {
     public static UserCartDTO fromUserCart (UserCart userCart){
         UserCartDTO userCartDTO = new UserCartDTO();
         userCartDTO.setId(userCart.getId());
+        userCartDTO.setUserId(userCart.getUser().getId());
         for(CartItem cartItem : userCart.getItems() ){
             if(cartItem.getWrappee() instanceof Product) {
                 userCartDTO.productIds.add(((Product) cartItem.getWrappee()).getId());

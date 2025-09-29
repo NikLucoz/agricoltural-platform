@@ -16,7 +16,7 @@ public class UserDTO {
     private String codFis;
     private String username;
     private List<UserType> userTypes;
-    private UserCart userCart;
+    private UserCartDTO userCart;
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -46,8 +46,13 @@ public class UserDTO {
     public List<UserType> getUserTypes() { return userTypes; }
     public void setUserTypes(List<UserType> userTypes) { this.userTypes = userTypes; }
 
-    public UserCart getUserCart() { return userCart; }
-    public void setUserCart(UserCart userCart) { this.userCart = userCart; }
+    public UserCartDTO getUserCart() {
+        return userCart;
+    }
+
+    public void setUserCart(UserCartDTO userCart) {
+        this.userCart = userCart;
+    }
 
     public static User fromDTO(UserDTO dto) {
         if (dto == null) return null;
@@ -61,7 +66,6 @@ public class UserDTO {
         user.setCodFis(dto.getCodFis());
         user.setUsername(dto.getUsername());
         user.setUserTypes(dto.getUserTypes());
-        user.setUserCart(dto.getUserCart());
         return user;
     }
 
@@ -78,7 +82,7 @@ public class UserDTO {
         dto.setCodFis(user.getCodFis());
         dto.setUsername(user.getUsername());
         dto.setUserTypes(user.getUserTypes());
-        dto.setUserCart(user.getUserCart());
+        dto.setUserCart(UserCartDTO.fromUserCart(user.getUserCart()));
         return dto;
     }
 }
