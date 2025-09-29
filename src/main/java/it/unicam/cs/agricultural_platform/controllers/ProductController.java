@@ -1,7 +1,7 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
-import it.unicam.cs.agricultural_platform.dto.ContentDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ContentDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
 import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;

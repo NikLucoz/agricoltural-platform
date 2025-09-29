@@ -1,12 +1,10 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
-import it.unicam.cs.agricultural_platform.dto.ContentDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductInPacketDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ContentDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductInPacketDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.facades.ContentFacade;
 import it.unicam.cs.agricultural_platform.models.Content;
-import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import org.springframework.beans.factory.annotation.Autowired;

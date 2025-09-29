@@ -1,10 +1,6 @@
-package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto.event;
 
-import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
-import it.unicam.cs.agricultural_platform.models.user.User;
-import it.unicam.cs.agricultural_platform.repositories.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class PartecipationDTO {
 

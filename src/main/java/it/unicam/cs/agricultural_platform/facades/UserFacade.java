@@ -1,7 +1,7 @@
 package it.unicam.cs.agricultural_platform.facades;
 
-import it.unicam.cs.agricultural_platform.dto.PasswordChangeRequestDTO;
-import it.unicam.cs.agricultural_platform.dto.UserDTO;
+import it.unicam.cs.agricultural_platform.dto.content.PasswordChangeRequestDTO;
+import it.unicam.cs.agricultural_platform.dto.user.UserDTO;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import it.unicam.cs.agricultural_platform.models.user.User;

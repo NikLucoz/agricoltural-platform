@@ -1,8 +1,8 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
-import it.unicam.cs.agricultural_platform.dto.PasswordChangeRequestDTO;
-import it.unicam.cs.agricultural_platform.dto.UserCartDTO;
-import it.unicam.cs.agricultural_platform.dto.UserDTO;
+import it.unicam.cs.agricultural_platform.dto.content.PasswordChangeRequestDTO;
+import it.unicam.cs.agricultural_platform.dto.user.UserCartDTO;
+import it.unicam.cs.agricultural_platform.dto.user.UserDTO;
 import it.unicam.cs.agricultural_platform.facades.UserFacade;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

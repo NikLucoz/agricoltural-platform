@@ -1,4 +1,4 @@
-package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto.content;
 
 public class UpdateMarketDataDTO {
     private long contentId;

@@ -1,7 +1,7 @@
 package it.unicam.cs.agricultural_platform.facades;
 
-import it.unicam.cs.agricultural_platform.dto.ProductDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductPacketDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductDTO;
+import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
@@ -9,7 +9,6 @@ import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
-import it.unicam.cs.agricultural_platform.repositories.ContentRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;

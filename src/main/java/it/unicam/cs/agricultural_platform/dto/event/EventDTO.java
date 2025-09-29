@@ -1,4 +1,4 @@
-package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto.event;
 
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.EventType;

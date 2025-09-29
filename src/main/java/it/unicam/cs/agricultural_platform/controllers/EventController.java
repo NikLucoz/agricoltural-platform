@@ -1,13 +1,10 @@
 package it.unicam.cs.agricultural_platform.controllers;
 
-import it.unicam.cs.agricultural_platform.dto.ContentDTO;
-import it.unicam.cs.agricultural_platform.dto.EventDTO;
-import it.unicam.cs.agricultural_platform.dto.PartecipationDTO;
-import it.unicam.cs.agricultural_platform.dto.ProductDTO;
+import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
+import it.unicam.cs.agricultural_platform.dto.event.PartecipationDTO;
 import it.unicam.cs.agricultural_platform.facades.EventFacade;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
-import it.unicam.cs.agricultural_platform.models.product.Product;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +21,13 @@ public class EventController {
     private EventFacade eventFacade;
 
     @GetMapping("/")
-    public ResponseEntity<List<Event>> getEvents() {
-        List<Event> userList = eventFacade.getEvents();
-        return new ResponseEntity<>(userList, HttpStatus.OK);
+    public ResponseEntity<List<EventDTO>> getEvents() {
+        List<Event> eventList = eventFacade.getEvents();
+        if(eventList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<EventDTO> eventDTOList = eventList.stream().map(EventDTO::fromEvent).collect(Collectors.toList());
+
+        return new ResponseEntity<>(eventDTOList, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")

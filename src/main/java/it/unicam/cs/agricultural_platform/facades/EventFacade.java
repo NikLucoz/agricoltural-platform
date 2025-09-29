@@ -1,6 +1,6 @@
 package it.unicam.cs.agricultural_platform.facades;
 
-import it.unicam.cs.agricultural_platform.dto.EventDTO;
+import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import it.unicam.cs.agricultural_platform.models.user.User;

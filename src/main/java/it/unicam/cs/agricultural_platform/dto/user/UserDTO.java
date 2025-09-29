@@ -1,8 +1,7 @@
-package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto.user;
 
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
-import it.unicam.cs.agricultural_platform.models.user.cart.UserCart;
 
 import java.util.List;
 

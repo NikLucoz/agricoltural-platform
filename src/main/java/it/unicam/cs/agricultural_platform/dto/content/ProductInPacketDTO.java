@@ -1,4 +1,4 @@
-package it.unicam.cs.agricultural_platform.dto;
+package it.unicam.cs.agricultural_platform.dto.content;
 
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
