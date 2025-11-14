@@ -2,10 +2,14 @@ package it.unicam.cs.agricultural_platform.facades;
 
 import it.unicam.cs.agricultural_platform.dto.content.PasswordChangeRequestDTO;
 import it.unicam.cs.agricultural_platform.dto.user.UserDTO;
+import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.user.UserDataMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.user.UserPasswordMiddleware;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.models.user.cart.UserCart;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,6 +23,12 @@ public class UserFacade {
     @Autowired
     private ContentFacade contentFacade;
 
+    private Middleware<User> userMiddleware;
+
+    @PostConstruct
+    private void init(){
+       userMiddleware = Middleware.link(new UserDataMiddleware(), new UserPasswordMiddleware());
+    }
 
     // === GENERIC ===
 
@@ -45,6 +55,7 @@ public class UserFacade {
 
     public boolean addUser(UserDTO userDTO) {
         var user = UserDTO.fromDTO(userDTO);
+        if(!userMiddleware.handle(user)) return false;
         if(userService.existsUserByUsername(user.getUsername())) return false;
         return userService.addUser(user);
     }
