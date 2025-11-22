@@ -75,7 +75,6 @@ public class ProductService {
     }
 
 
-
     // === REVIEW NEEDED ===
 
     public List<Product> getAllReviewNeededProducts() {
@@ -91,7 +90,6 @@ public class ProductService {
 
     public boolean addProduct(Product product) {
         try {
-            if(product.getAuthor() == null) return false;
             productRepository.save(product);
             return true;
         } catch (Exception e) {
@@ -102,14 +100,8 @@ public class ProductService {
     public boolean updateProduct(Product product, Product updatedProduct) {
         if(updatedProduct == null) return false;
         if(product == null) return false;
-
-        if (updatedProduct.getName() != null && !updatedProduct.getName().isBlank()) {
-            product.setName(updatedProduct.getName());
-        }
-
-        if (updatedProduct.getDescription() != null && !updatedProduct.getDescription().isBlank()) {
-            product.setDescription(updatedProduct.getDescription());
-        }
+        product.setName(updatedProduct.getName());
+        product.setDescription(updatedProduct.getDescription());
 
         if (updatedProduct.getCertificates() != null && !updatedProduct.getCertificates().isEmpty()) {
             product.setCertificates(updatedProduct.getCertificates());
