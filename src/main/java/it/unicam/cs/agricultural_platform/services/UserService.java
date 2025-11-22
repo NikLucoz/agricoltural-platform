@@ -86,33 +86,13 @@ public class UserService {
         if(updatedUser == null) return false;
         if (user == null) return false;
 
-        if (updatedUser.getName() != null && !updatedUser.getName().isBlank()) {
-            user.setName(updatedUser.getName());
-        }
-
-        if (updatedUser.getSurname() != null && !updatedUser.getSurname().isBlank()) {
-            user.setSurname(updatedUser.getSurname());
-        }
-
-        if (updatedUser.getEmail() != null && !updatedUser.getEmail().isBlank()) {
-            user.setEmail(updatedUser.getEmail());
-        }
-
-        if (updatedUser.getCodFis() != null && !updatedUser.getCodFis().isBlank()) {
-            user.setCodFis(updatedUser.getCodFis());
-        }
-
-        if (updatedUser.getpIva() != null && !updatedUser.getpIva().isBlank()) {
-            user.setpIva(updatedUser.getpIva());
-        }
-
-        if (updatedUser.getUsername() != null && !updatedUser.getUsername().isBlank()) {
-            user.setUsername(updatedUser.getUsername());
-        }
-
-        if (updatedUser.getUserTypes() != null && !updatedUser.getUserTypes().isEmpty()) {
-            user.setUserTypes(updatedUser.getUserTypes());
-        }
+        user.setName(updatedUser.getName());
+        user.setSurname(updatedUser.getSurname());
+        user.setEmail(updatedUser.getEmail());
+        user.setCodFis(updatedUser.getCodFis());
+        user.setpIva(updatedUser.getpIva());
+        user.setUsername(updatedUser.getUsername());
+        user.setUserTypes(updatedUser.getUserTypes());
 
         userRepository.save(user);
         return true;
