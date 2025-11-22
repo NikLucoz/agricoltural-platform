@@ -2,7 +2,6 @@ package it.unicam.cs.agricultural_platform.middlewares.content;
 
 import it.unicam.cs.agricultural_platform.dto.content.ContentDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
-import it.unicam.cs.agricultural_platform.repositories.UserRepository;
 import it.unicam.cs.agricultural_platform.services.UserService;
 
 public class ContentMiddleware extends Middleware<ContentDTO> {

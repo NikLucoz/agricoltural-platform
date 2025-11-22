@@ -1,11 +1,15 @@
 package it.unicam.cs.agricultural_platform.facades;
 
 import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
+import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.event.EventMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.event.EventParticipantsMiddleware;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.services.EventService;
 import it.unicam.cs.agricultural_platform.services.UserService;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +24,13 @@ public class EventFacade {
     @Autowired
     private UserService userService;
 
+    private Middleware<EventDTO> eventMiddleware;
+
+    @PostConstruct
+    private void init(){
+        this.eventMiddleware = EventMiddleware.link(new EventMiddleware(eventService), new EventParticipantsMiddleware(eventService, userService));
+    }
+
     public List<Event> getEvents() {
         return eventService.getEvents();
     }
@@ -33,6 +44,8 @@ public class EventFacade {
     }
 
     public boolean addEvent(EventDTO eventDTO) {
+        if(!eventMiddleware.handle(eventDTO)) return false;
+
         var event = eventDTO.fromDTO(eventDTO);
         return eventService.addEvent(event);
     }
@@ -42,6 +55,8 @@ public class EventFacade {
     }
 
     public boolean updateEvent(long id, EventDTO eventDTO) {
+        if(!eventMiddleware.handle(eventDTO)) return false;
+
         var original = eventService.getEvent(id);
         var updatedEvent = EventDTO.fromDTO(eventDTO);
 
@@ -68,6 +83,7 @@ public class EventFacade {
 
     public boolean addParticipants(long id, List<Long> usersIds) {
         var users = new ArrayList<User>();
+
         for (long userId: usersIds) {
             if(!userService.existsUser(userId))return false;
             users.add(userService.getUserById(userId));

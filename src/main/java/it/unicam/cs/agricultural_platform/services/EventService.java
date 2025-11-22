@@ -7,7 +7,6 @@ import it.unicam.cs.agricultural_platform.repositories.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +28,6 @@ public class EventService {
     }
 
     public boolean addEvent(Event event){
-        if(event.getName().isBlank()) return false;
-        if(event.getPlace().isBlank()) return false;
-        if(event.getLocalDateTime() == null) return false;
-        if(event.getEventType() == null) return false;
-        if(event.getLocalDateTime().isBefore(LocalDateTime.now())) return false;
-
         try{
             eventRepository.save(event);
             return true;
@@ -46,21 +39,26 @@ public class EventService {
     public boolean updateEvent(Event event, Event updateEvent){
         if(updateEvent == null || event == null) return false;
 
-        if(updateEvent.getName() != null && !updateEvent.getName().isBlank()) {
+        if(!event.getName().equals(updateEvent.getName())){
             event.setName(updateEvent.getName());
         }
-        if(updateEvent.getDescription() != null && !updateEvent.getDescription().isBlank()) {
+
+        if(!event.getDescription().equals(updateEvent.getDescription())){
             event.setDescription(updateEvent.getDescription());
         }
-        if(updateEvent.getLocalDateTime() != null) {
+
+        if(!event.getLocalDateTime().equals(updateEvent.getLocalDateTime())){
             event.setLocalDateTime(updateEvent.getLocalDateTime());
         }
-        if(updateEvent.getPlace() != null && !updateEvent.getPlace().isBlank()) {
+
+        if(!event.getPlace().equals(updateEvent.getPlace())){
             event.setPlace(updateEvent.getPlace());
         }
-        if(updateEvent.getEventType() != null) {
+
+        if(!event.getEventType().equals(updateEvent.getEventType())){
             event.setEventType(updateEvent.getEventType());
         }
+
         eventRepository.save(event);
         return true;
     }
@@ -115,12 +113,5 @@ public class EventService {
             return true;
         }
         return false;
-    }
-
-    public boolean hasParticipant(long id, User user){
-        if(user == null) return false;
-        if(!existsEvent(id)) return false;
-        var event = eventRepository.findEventById(id);
-        return event.hasParticipant(user);
     }
 }
