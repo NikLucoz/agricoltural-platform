@@ -5,6 +5,7 @@ import it.unicam.cs.agricultural_platform.dto.user.UserDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserDataMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserPasswordMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.user.UserUpdatePasswordMiddleware;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import it.unicam.cs.agricultural_platform.models.user.User;
@@ -24,10 +25,12 @@ public class UserFacade {
     private ContentFacade contentFacade;
 
     private Middleware<UserDTO> userMiddleware;
+    private Middleware<PasswordChangeRequestDTO> userPasswordChangeRequestMiddleware;
 
     @PostConstruct
     private void init(){
        userMiddleware = Middleware.link(new UserDataMiddleware(userService), new UserPasswordMiddleware(userService));
+       userPasswordChangeRequestMiddleware = Middleware.link(new UserUpdatePasswordMiddleware(userService));
     }
 
     // === GENERIC ===
@@ -44,10 +47,12 @@ public class UserFacade {
         return userService.getUserCart(id);
     }
 
-    public boolean updateUserPassword(long id, PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        if(!userService.existsUser(id)) return false;
-        var user = userService.getUserById(id);
-        return userService.changePassword(user, passwordChangeRequestDTO.getOldPassword(), passwordChangeRequestDTO.getNewPassword());
+    public boolean updateUserPassword(PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        if(!userPasswordChangeRequestMiddleware.handle(passwordChangeRequestDTO)) return false;
+
+        var user = userService.getUserById(passwordChangeRequestDTO.getUserId());
+        userService.changePassword(user, passwordChangeRequestDTO.getNewPassword());
+        return true;
     }
 
 

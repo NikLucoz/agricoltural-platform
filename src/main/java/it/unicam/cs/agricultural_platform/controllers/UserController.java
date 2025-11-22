@@ -62,9 +62,9 @@ public class UserController {
         return new ResponseEntity<>(UserCartDTO.fromUserCart(userCart), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/changePassword")
-    public ResponseEntity<Object> changePassword(@PathVariable long id, @RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        if(!userFacade.updateUserPassword(id, passwordChangeRequestDTO)) {
+    @PutMapping("/changePassword")
+    public ResponseEntity<Object> changePassword(@RequestBody PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        if(!userFacade.updateUserPassword(passwordChangeRequestDTO)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);

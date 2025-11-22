@@ -43,16 +43,9 @@ public class UserService {
         return userRepository.findById(id).hasUserType(type);
     }
 
-    public boolean changePassword(User user, String oldPassword, String newPassword) {
-        if(oldPassword.equals(newPassword)) return false;
-        if(!oldPassword.isBlank() && newPassword != null && !newPassword.isBlank()) {
-            if(user.getPassword().equals(oldPassword)) {
-                user.setPassword(newPassword);
-                userRepository.save(user);
-                return true;
-            }
-        }
-        return false;
+    public void changePassword(User user, String newPassword) {
+        user.setPassword(newPassword);
+        userRepository.save(user);
     }
 
     public boolean existsUserByUsername(String username) {
