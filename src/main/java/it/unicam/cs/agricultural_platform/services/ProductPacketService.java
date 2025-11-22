@@ -43,8 +43,14 @@ public class ProductPacketService {
         if(updatedProductPacket == null) return false;
         if(productPacket == null) return false;
 
-        productPacket.setName(updatedProductPacket.getName());
-        productPacket.setDescription(updatedProductPacket.getDescription());
+        if(!productPacket.getName().equals(updatedProductPacket.getName())){
+            productPacket.setName(updatedProductPacket.getName());
+        }
+
+        if(!productPacket.getDescription().equals(updatedProductPacket.getDescription())){
+            productPacket.setDescription(updatedProductPacket.getDescription());
+        }
+
         productPacket.setProductsInPacket(updatedProductPacket.getProductsInPacket());
         productPacketRepository.save(productPacket);
         return true;

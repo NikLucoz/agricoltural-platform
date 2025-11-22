@@ -100,8 +100,14 @@ public class ProductService {
     public boolean updateProduct(Product product, Product updatedProduct) {
         if(updatedProduct == null) return false;
         if(product == null) return false;
-        product.setName(updatedProduct.getName());
-        product.setDescription(updatedProduct.getDescription());
+
+        if(!product.getName().equals(updatedProduct.getName())){
+            product.setName(updatedProduct.getName());
+        }
+
+        if(!product.getDescription().equals(updatedProduct.getDescription())){
+            product.setDescription(updatedProduct.getDescription());
+        }
 
         if (updatedProduct.getCertificates() != null && !updatedProduct.getCertificates().isEmpty()) {
             product.setCertificates(updatedProduct.getCertificates());
