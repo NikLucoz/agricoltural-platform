@@ -23,11 +23,11 @@ public class UserFacade {
     @Autowired
     private ContentFacade contentFacade;
 
-    private Middleware<User> userMiddleware;
+    private Middleware<UserDTO> userMiddleware;
 
     @PostConstruct
     private void init(){
-       userMiddleware = Middleware.link(new UserDataMiddleware(), new UserPasswordMiddleware());
+       userMiddleware = Middleware.link(new UserDataMiddleware(userService), new UserPasswordMiddleware(userService));
     }
 
     // === GENERIC ===
@@ -54,9 +54,8 @@ public class UserFacade {
     // === CRUD ===
 
     public boolean addUser(UserDTO userDTO) {
+        if(!userMiddleware.handle(userDTO)) return false;
         var user = UserDTO.fromDTO(userDTO);
-        if(!userMiddleware.handle(user)) return false;
-        if(userService.existsUserByUsername(user.getUsername())) return false;
         return userService.addUser(user);
     }
 
@@ -80,6 +79,7 @@ public class UserFacade {
     }
 
     public boolean updateUser(long id, UserDTO userDTO) {
+        if(!userMiddleware.handle(userDTO)) return false;
         var updatedUser = UserDTO.fromDTO(userDTO);
         return userService.updateUser(id, updatedUser);
     }

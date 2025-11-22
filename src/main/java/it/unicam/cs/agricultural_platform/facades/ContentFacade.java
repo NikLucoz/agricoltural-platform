@@ -6,6 +6,7 @@ import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
 import it.unicam.cs.agricultural_platform.middlewares.content.ContentMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.content.ProductInPacketMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.content.ProductMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.content.ProductPacketMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserDataMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserPasswordMiddleware;
@@ -40,6 +41,7 @@ public class ContentFacade {
     private CartItemRepository cartItemRepository;
 
     private Middleware<ContentDTO> productPacketMiddleware;
+    private Middleware<ContentDTO> productMiddleware;
 
     @PostConstruct
     private void init(){
@@ -47,7 +49,11 @@ public class ContentFacade {
                 new ContentMiddleware(userService),
                 new ProductPacketMiddleware(userService),
                 new ProductInPacketMiddleware(productPacketService, productService)
+        );
 
+        productMiddleware = Middleware.link(
+                new ContentMiddleware(userService),
+                new ProductMiddleware(userService)
         );
     }
 
@@ -155,9 +161,9 @@ public class ContentFacade {
     }
 
     public boolean addProduct(ProductDTO productDTO) {
-        var author = userService.getUserById(productDTO.getAuthorId());
-        if(!author.hasUserType(UserType.PRODUCER)) return false;
+        if(!productMiddleware.handle(productDTO)) return false;
 
+        var author = userService.getUserById(productDTO.getAuthorId());
         var product = ProductDTO.fromDTO(productDTO, author);
         product.setApproved(false);
         product.setReviewNeeded(false);
@@ -165,6 +171,8 @@ public class ContentFacade {
     }
 
     public boolean updateProduct(long id, ProductDTO productDTO) {
+        if(!productMiddleware.handle(productDTO)) return false;
+
         var original = productService.getProduct(id);
         var author = userService.getUserById(productDTO.getAuthorId());
         var updatedProduct = ProductDTO.fromDTO(productDTO, author);
