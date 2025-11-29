@@ -3,6 +3,7 @@ package it.unicam.cs.agricultural_platform.facades;
 import it.unicam.cs.agricultural_platform.dto.content.PasswordChangeRequestDTO;
 import it.unicam.cs.agricultural_platform.dto.user.UserDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.user.UserCreateMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserDataMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserPasswordMiddleware;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
@@ -23,11 +24,22 @@ public class UserFacade {
     @Autowired
     private ContentFacade contentFacade;
 
-    private Middleware<UserDTO> userMiddleware;
+    @Autowired EventFacade eventFacade;
+
+    private Middleware<UserDTO> userAddMiddleware;
+    private Middleware<UserDTO> userUpdateMiddleware;
 
     @PostConstruct
     private void init(){
-       userMiddleware = Middleware.link(new UserDataMiddleware(userService), new UserPasswordMiddleware(userService));
+        userAddMiddleware = Middleware.link(
+                new UserCreateMiddleware(userService),
+                new UserDataMiddleware(userService),
+                new UserPasswordMiddleware(userService)
+       );
+
+        userUpdateMiddleware = Middleware.link(
+                new UserDataMiddleware(userService)
+        );
     }
 
     // === GENERIC ===
@@ -54,13 +66,14 @@ public class UserFacade {
     // === CRUD ===
 
     public boolean addUser(UserDTO userDTO) {
-        if(!userMiddleware.handle(userDTO)) return false;
+        if(!userAddMiddleware.handle(userDTO)) return false;
         var user = UserDTO.fromDTO(userDTO);
         return userService.addUser(user);
     }
 
     public boolean deleteUser(long id) {
         if(!userService.existsUser(id)) return false;
+        var user = userService.getUserById(id);
 
         var userProducts = contentFacade.getProductsByUser(id);
         var userProductPackets = contentFacade.getProductPacketsByUser(id);
@@ -75,11 +88,13 @@ public class UserFacade {
             contentFacade.deleteProduct(userProduct.getId());
         }
 
+        eventFacade.removeOrphanPartecipationFor(user);
+
         return userService.deleteUser(id);
     }
 
     public boolean updateUser(long id, UserDTO userDTO) {
-        if(!userMiddleware.handle(userDTO)) return false;
+        if(!userUpdateMiddleware.handle(userDTO)) return false;
         var updatedUser = UserDTO.fromDTO(userDTO);
         return userService.updateUser(id, updatedUser);
     }

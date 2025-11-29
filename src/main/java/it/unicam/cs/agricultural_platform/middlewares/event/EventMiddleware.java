@@ -20,7 +20,7 @@ public class EventMiddleware extends Middleware<EventDTO> {
         if(data.getPlace().isBlank() || data.getPlace() == null) return false;
         if(data.getLocalDateTime() == null) return false;
         if(data.getEventType() == null) return false;
-        if(data.getLocalDateTime().isBefore(LocalDateTime.now())) return false;
+        if(data.getLocalDateTime().isBefore(LocalDateTime.now())) return false; // TODO: Errore da rivedere
 
         return handleNext(data);
     }

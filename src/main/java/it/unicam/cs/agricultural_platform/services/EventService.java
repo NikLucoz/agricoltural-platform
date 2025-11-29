@@ -4,6 +4,7 @@ import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.repositories.EventRepository;
+import it.unicam.cs.agricultural_platform.repositories.PartecipantsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,9 @@ import java.util.List;
 public class EventService {
     @Autowired
     private EventRepository eventRepository;
+
+    @Autowired
+    private PartecipantsRepository partecipantsRepository;
 
     public Event getEvent(long id){
         return eventRepository.findEventById(id);
@@ -113,5 +117,9 @@ public class EventService {
             return true;
         }
         return false;
+    }
+
+    public List<Partecipation> getUserPartecipations(long userId) {
+        return partecipantsRepository.findByUser_Id(userId);
     }
 }

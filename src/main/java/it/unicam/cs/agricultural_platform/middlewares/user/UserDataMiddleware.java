@@ -18,7 +18,6 @@ public class UserDataMiddleware extends Middleware<UserDTO> {
         if (data.getSurname() == null && !data.getSurname().isBlank()) return false;
         if (data.getUsername() == null && !data.getUsername().isBlank()) return false;
         if (data.getEmail() == null && !data.getEmail().isBlank()) return false;
-        if(userService.existsUserByUsername(data.getUsername())) return false;
         return handleNext(data);
     }
 }

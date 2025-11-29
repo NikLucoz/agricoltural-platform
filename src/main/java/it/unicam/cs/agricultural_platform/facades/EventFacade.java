@@ -4,12 +4,14 @@ import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
 import it.unicam.cs.agricultural_platform.middlewares.event.EventMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.event.EventParticipantsMiddleware;
+import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import it.unicam.cs.agricultural_platform.models.user.User;
 import it.unicam.cs.agricultural_platform.services.EventService;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -63,6 +65,13 @@ public class EventFacade {
         return eventService.updateEvent(original, updatedEvent);
     }
 
+    public List<Partecipation> getPartecipationsForUser(long userId) {
+        if(userService.existsUser(userId)) {
+            return eventService.getUserPartecipations(userId);
+        }
+        return new ArrayList<>();
+    }
+
     // ==== Events Participants ====
 
     public List<Partecipation> getParticipants(long id) {
@@ -90,5 +99,14 @@ public class EventFacade {
         }
 
         return eventService.addParticipants(id, users);
+    }
+
+    @Transactional
+    public void removeOrphanPartecipationFor(User user) {
+        var parteicpations = eventService.getUserPartecipations(user.getId());
+
+        for(Partecipation partecipation : parteicpations) {
+            partecipation.getEvent().removeParticipant(partecipation.getUser());
+        }
     }
 }
