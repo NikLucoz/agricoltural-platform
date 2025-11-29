@@ -23,8 +23,8 @@ public class EventService {
         return eventRepository.findEventById(id);
     }
 
-    public Event getEvent(String name){
-        return eventRepository.findEventByName(name);
+    public List<Event> getEvents(String filter){
+        return eventRepository.findEventsByFilter(filter);
     }
 
     public List<Event> getEvents(){
@@ -81,7 +81,7 @@ public class EventService {
 
 
     public List<Partecipation> getParticipants(long id) {
-        if(!existsEvent(id)) return new ArrayList<Partecipation>();
+        if(!existsEvent(id)) return null;
         var event = eventRepository.findEventById(id);
         return event.getParticipants();
     }

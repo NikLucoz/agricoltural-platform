@@ -41,8 +41,8 @@ public class EventFacade {
         return eventService.getEvent(id);
     }
 
-    public Event getEvent(String name) {
-        return eventService.getEvent(name);
+    public List<Event> getEvents(String filter) {
+        return eventService.getEvents(filter);
     }
 
     public boolean addEvent(EventDTO eventDTO) {

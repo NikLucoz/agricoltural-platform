@@ -40,14 +40,13 @@ public class EventController {
         return new ResponseEntity<>(eventDTO, HttpStatus.OK);
     }
 
-    @GetMapping(params = "name")
-    public ResponseEntity<EventDTO> getEventByName(@RequestParam String name) {
-        Event event = eventFacade.getEvent(name);
-        if(event == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @GetMapping(params = "filter")
+    public ResponseEntity<List<EventDTO>> getEventByFilter(@RequestParam String filter) {
+        List<Event> event = eventFacade.getEvents(filter);
+        if(event == null || event.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        EventDTO eventDTO = EventDTO.fromEvent(event);
-
-        return new ResponseEntity<>(eventDTO, HttpStatus.OK);
+        List<EventDTO> eventDTOList = event.stream().map(EventDTO::fromEvent).collect(Collectors.toList());
+        return new ResponseEntity<>(eventDTOList, HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -74,6 +73,7 @@ public class EventController {
     public ResponseEntity<List<PartecipationDTO>> getParticipants(@PathVariable long id) {
         List<Partecipation> partecipationList = eventFacade.getParticipants(id);
         if(partecipationList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(partecipationList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         List<PartecipationDTO> partecipationDTOList = partecipationList.stream().map(PartecipationDTO::fromPartecipation).collect(Collectors.toList());
 
