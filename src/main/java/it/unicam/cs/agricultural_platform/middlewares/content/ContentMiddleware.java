@@ -13,10 +13,10 @@ public class ContentMiddleware extends Middleware<ContentDTO> {
 
     @Override
     public boolean handle(ContentDTO data) {
-        if(data.getName().isBlank() || data.getName() == null) return false;
-        if(data.getDescription().isBlank() || data.getDescription() == null) return false;
+        if(data.getName() == null || data.getName().isBlank()) return false;
+        if(data.getDescription() == null || data.getDescription().isBlank()) return false;
 
-        if(data.getAuthorId() == 0 || data.getAuthorId() == null) return false;
+        if(data.getAuthorId() == null || data.getAuthorId() == 0) return false;
         if(!userService.existsUser(data.getAuthorId())) return false;
 
         if(data.getPrice() < 0) return false;

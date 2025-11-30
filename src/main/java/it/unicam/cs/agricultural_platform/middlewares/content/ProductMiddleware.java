@@ -18,7 +18,7 @@ public class ProductMiddleware extends Middleware<ContentDTO> {
     public boolean handle(ContentDTO data) {
         if(data instanceof ProductDTO productDTO) {
             if(!userService.hasUserType(productDTO.getAuthorId(), UserType.PRODUCER)) return false;
-            if(!productDTO.getProcesses().isBlank()) {
+            if(productDTO.getProcesses() != null && !productDTO.getProcesses().isBlank()) {
                 if(!userService.hasUserType(productDTO.getAuthorId(), UserType.PROCESSOR)) return false;
             }
         }
