@@ -117,6 +117,8 @@ public class ProductService {
             product.setProcesses(updatedProduct.getProcesses());
         }
 
+        product.setReviewNeeded(false);
+        product.setApproved(false);
         productRepository.save(product);
         return true;
     }

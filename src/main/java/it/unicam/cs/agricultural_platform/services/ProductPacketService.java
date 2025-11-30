@@ -52,6 +52,8 @@ public class ProductPacketService {
         }
 
         productPacket.setProductsInPacket(updatedProductPacket.getProductsInPacket());
+        productPacket.setReviewNeeded(false);
+        productPacket.setApproved(false);
         productPacketRepository.save(productPacket);
         return true;
     }
