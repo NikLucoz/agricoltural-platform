@@ -30,7 +30,7 @@ public class EventFacade {
 
     @PostConstruct
     private void init(){
-        this.eventMiddleware = EventMiddleware.link(new EventMiddleware(eventService), new EventParticipantsMiddleware(eventService, userService));
+        this.eventMiddleware = Middleware.link(new EventMiddleware(eventService), new EventParticipantsMiddleware(eventService, userService));
     }
 
     public List<Event> getEvents() {
