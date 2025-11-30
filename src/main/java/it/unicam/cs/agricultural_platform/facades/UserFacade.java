@@ -56,10 +56,11 @@ public class UserFacade {
         return userService.getUserCart(id);
     }
 
-    public boolean updateUserPassword(long id, PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        if(!userService.existsUser(id)) return false;
-        var user = userService.getUserById(id);
-        return userService.changePassword(user, passwordChangeRequestDTO.getOldPassword(), passwordChangeRequestDTO.getNewPassword());
+    public boolean updateUserPassword(PasswordChangeRequestDTO passwordChangeRequestDTO) {
+        if(!userService.existsUser(passwordChangeRequestDTO.getUserId())) return false;
+        var user = userService.getUserById(passwordChangeRequestDTO.getUserId());
+        userService.changePassword(user, passwordChangeRequestDTO.getNewPassword());
+        return true;
     }
 
 
