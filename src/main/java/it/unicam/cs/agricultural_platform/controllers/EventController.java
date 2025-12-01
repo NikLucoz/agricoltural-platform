@@ -102,9 +102,11 @@ public class EventController {
     @GetMapping("/user/{id}/partecipations")
     public ResponseEntity<Object> getUsersPartecipations(@PathVariable long id){
         List<Partecipation> userPartecipationList = eventFacade.getUserPartecipations(id);
-        if(userPartecipationList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         if(userPartecipationList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(userPartecipationList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        return new ResponseEntity<>(userPartecipationList, HttpStatus.OK);
+        List<PartecipationDTO> partecipationDTOList = userPartecipationList.stream().map(PartecipationDTO::fromPartecipation).collect(Collectors.toList());
+
+        return new ResponseEntity<>(partecipationDTOList, HttpStatus.OK);
     }
 }
