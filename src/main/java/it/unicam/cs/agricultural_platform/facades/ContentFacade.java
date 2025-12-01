@@ -4,18 +4,16 @@ import it.unicam.cs.agricultural_platform.dto.content.ContentDTO;
 import it.unicam.cs.agricultural_platform.dto.content.ProductDTO;
 import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.MiddlewareValidationContext;
 import it.unicam.cs.agricultural_platform.middlewares.content.ContentMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.content.ProductInPacketMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.content.ProductMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.content.ProductPacketMiddleware;
-import it.unicam.cs.agricultural_platform.middlewares.user.UserDataMiddleware;
-import it.unicam.cs.agricultural_platform.middlewares.user.UserPasswordMiddleware;
 import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
-import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
@@ -161,7 +159,7 @@ public class ContentFacade {
     }
 
     public boolean addProduct(ProductDTO productDTO) {
-        if(!productMiddleware.handle(productDTO)) return false;
+        if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forCreate())) return false;
 
         var author = userService.getUserById(productDTO.getAuthorId());
         var product = ProductDTO.fromDTO(productDTO, author);
@@ -171,7 +169,7 @@ public class ContentFacade {
     }
 
     public boolean updateProduct(long id, ProductDTO productDTO) {
-        if(!productMiddleware.handle(productDTO)) return false;
+        if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forUpdate())) return false;
 
         var original = productService.getProduct(id);
         var author = userService.getUserById(productDTO.getAuthorId());
@@ -208,7 +206,7 @@ public class ContentFacade {
     }
 
     public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
-        if(!productPacketMiddleware.handle(productPacketDTO)) return false;
+        if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forCreate())) return false;
 
         var productPacket = createPacketFromDTO(productPacketDTO);
 
@@ -238,7 +236,7 @@ public class ContentFacade {
     public boolean deleteProductPacket(long id) { return productPacketService.deleteProductPacket(id); }
 
     public boolean updateProductPacket(long id, ProductPacketDTO productPacketDTO) {
-        if(!productPacketMiddleware.handle(productPacketDTO)) return false;
+        if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forUpdate())) return false;
 
         var original = productPacketService.getProductPacket(id);
         var updatedProductPacket = createPacketFromDTO(productPacketDTO);

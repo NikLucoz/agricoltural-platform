@@ -3,9 +3,10 @@ package it.unicam.cs.agricultural_platform.facades;
 import it.unicam.cs.agricultural_platform.dto.content.PasswordChangeRequestDTO;
 import it.unicam.cs.agricultural_platform.dto.user.UserDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
-import it.unicam.cs.agricultural_platform.middlewares.user.UserCreateMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.MiddlewareValidationContext;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserDataMiddleware;
 import it.unicam.cs.agricultural_platform.middlewares.user.UserPasswordMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.user.UserUpdatePasswordMiddleware;
 import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.services.UserService;
 import it.unicam.cs.agricultural_platform.models.user.User;
@@ -26,20 +27,17 @@ public class UserFacade {
 
     @Autowired EventFacade eventFacade;
 
-    private Middleware<UserDTO> userAddMiddleware;
-    private Middleware<UserDTO> userUpdateMiddleware;
+    private Middleware<UserDTO> userMiddleware;
+    private Middleware<PasswordChangeRequestDTO> passwordMiddleware;
 
     @PostConstruct
     private void init(){
-        userAddMiddleware = Middleware.link(
-                new UserCreateMiddleware(userService),
+        userMiddleware = Middleware.link(
                 new UserDataMiddleware(userService),
                 new UserPasswordMiddleware(userService)
        );
 
-        userUpdateMiddleware = Middleware.link(
-                new UserDataMiddleware(userService)
-        );
+        passwordMiddleware = Middleware.link(new UserUpdatePasswordMiddleware(userService));
     }
 
     // === GENERIC ===
@@ -57,17 +55,16 @@ public class UserFacade {
     }
 
     public boolean updateUserPassword(PasswordChangeRequestDTO passwordChangeRequestDTO) {
-        if(!userService.existsUser(passwordChangeRequestDTO.getUserId())) return false;
+        if(!passwordMiddleware.handle(passwordChangeRequestDTO, null)) return false;
         var user = userService.getUserById(passwordChangeRequestDTO.getUserId());
         userService.changePassword(user, passwordChangeRequestDTO.getNewPassword());
         return true;
     }
 
-
     // === CRUD ===
 
     public boolean addUser(UserDTO userDTO) {
-        if(!userAddMiddleware.handle(userDTO)) return false;
+        if(!userMiddleware.handle(userDTO, MiddlewareValidationContext.forCreate())) return false;
         var user = UserDTO.fromDTO(userDTO);
         return userService.addUser(user);
     }
@@ -95,11 +92,10 @@ public class UserFacade {
     }
 
     public boolean updateUser(long id, UserDTO userDTO) {
-        if(!userUpdateMiddleware.handle(userDTO)) return false;
+        if(!userMiddleware.handle(userDTO, MiddlewareValidationContext.forUpdate())) return false;
         var updatedUser = UserDTO.fromDTO(userDTO);
         return userService.updateUser(id, updatedUser);
     }
-
 
     // === MANAGEMENT ===
 
