@@ -65,11 +65,11 @@ public class EventFacade {
         return eventService.updateEvent(original, updatedEvent);
     }
 
-    public List<Partecipation> getPartecipationsForUser(long userId) {
+    public List<Partecipation> getUserPartecipations(long userId) {
         if(userService.existsUser(userId)) {
             return eventService.getUserPartecipations(userId);
         }
-        return new ArrayList<>();
+        return null;
     }
 
     // ==== Events Participants ====

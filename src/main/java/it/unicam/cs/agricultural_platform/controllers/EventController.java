@@ -6,6 +6,7 @@ import it.unicam.cs.agricultural_platform.facades.EventFacade;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -96,5 +97,14 @@ public class EventController {
     public ResponseEntity<Object> addParticipants(@PathVariable long id, @RequestBody List<Long> usersIds) {
         if(!eventFacade.addParticipants(id, usersIds)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{id}/partecipations")
+    public ResponseEntity<Object> getUsersPartecipations(@PathVariable long id){
+        List<Partecipation> userPartecipationList = eventFacade.getUserPartecipations(id);
+        if(userPartecipationList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if(userPartecipationList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<>(userPartecipationList, HttpStatus.OK);
     }
 }
