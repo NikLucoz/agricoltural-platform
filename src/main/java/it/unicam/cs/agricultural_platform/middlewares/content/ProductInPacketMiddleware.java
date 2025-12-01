@@ -4,6 +4,7 @@ import it.unicam.cs.agricultural_platform.dto.content.ContentDTO;
 import it.unicam.cs.agricultural_platform.dto.content.ProductInPacketDTO;
 import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.MiddlewareValidationContext;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 
@@ -18,16 +19,19 @@ public class ProductInPacketMiddleware extends Middleware<ContentDTO> {
     }
 
     @Override
-    public boolean handle(ContentDTO data) {
+    public boolean handle(ContentDTO data, MiddlewareValidationContext validationContext) {
         if (data instanceof ProductPacketDTO productPacketDTO) {
             for(ProductInPacketDTO productInPacketDTO : productPacketDTO.getProductsInPacket()) {
-                if(productInPacketDTO.getPacketId() == 0) return false;
+                if(validationContext.isUpdate()) {
+                    if(productInPacketDTO.getPacketId() == 0) return false;
+                }
+
                 if(productInPacketDTO.getProductId() == 0) return false;
                 if(productInPacketDTO.getQuantity() <= 0) return false;
 
                 if(!productService.existsProduct(productInPacketDTO.getProductId())) return false;
             }
         }
-        return handleNext(data);
+        return handleNext(data, validationContext);
     }
 }

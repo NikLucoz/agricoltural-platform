@@ -2,6 +2,7 @@ package it.unicam.cs.agricultural_platform.middlewares.market;
 
 import it.unicam.cs.agricultural_platform.dto.user.ItemCartOperationDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.MiddlewareValidationContext;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
@@ -19,12 +20,12 @@ public class ItemCartOperationMiddleware extends Middleware<ItemCartOperationDTO
     }
 
     @Override
-    public boolean handle(ItemCartOperationDTO data) {
+    public boolean handle(ItemCartOperationDTO data, MiddlewareValidationContext validationContext) {
         if(!userService.existsUser(data.getUserId())) return false;
         if(!productService.existsProduct(data.getContentId())) {
             if(!productPacketService.existsPacket(data.getContentId())) return false;
         }
         if(data.getQuantity() < 0) return false;
-        return handleNext(data);
+        return handleNext(data, validationContext);
     }
 }

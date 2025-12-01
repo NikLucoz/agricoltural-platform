@@ -3,6 +3,7 @@ package it.unicam.cs.agricultural_platform.middlewares.event;
 import it.unicam.cs.agricultural_platform.dto.event.EventDTO;
 import it.unicam.cs.agricultural_platform.dto.event.PartecipationDTO;
 import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.MiddlewareValidationContext;
 import it.unicam.cs.agricultural_platform.services.EventService;
 import it.unicam.cs.agricultural_platform.services.UserService;
 
@@ -16,11 +17,11 @@ public class EventParticipantsMiddleware extends Middleware<EventDTO> {
         this.userService = userService;
     }
 
-    public boolean handle(EventDTO data){
+    public boolean handle(EventDTO data, MiddlewareValidationContext validationContext){
         for (PartecipationDTO partecipation : data.getParticipants()) {
             if(!userService.existsUser(partecipation.getUserId()))return false;
         }
 
-        return handleNext(data);
+        return handleNext(data, validationContext);
     }
 }
