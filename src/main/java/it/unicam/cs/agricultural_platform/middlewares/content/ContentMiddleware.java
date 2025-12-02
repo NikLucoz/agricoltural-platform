@@ -17,11 +17,13 @@ public class ContentMiddleware extends Middleware<ContentDTO> {
         if(data.getName() == null || data.getName().isBlank()) return false;
         if(data.getDescription() == null || data.getDescription().isBlank()) return false;
 
-        if(data.getAuthorId() == null || data.getAuthorId() == 0) return false;
-        if(!userService.existsUser(data.getAuthorId())) return false;
+        if(validationContext.isCreate()) {
+            if(data.getPrice() < 0) return false;
+            if(data.getStockQuantity() < 0) return false;
+            if(data.getAuthorId() == null || data.getAuthorId() == 0) return false;
+            if(!userService.existsUser(data.getAuthorId())) return false;
+        }
 
-        if(data.getPrice() < 0) return false;
-        if(data.getStockQuantity() < 0) return false;
         return handleNext(data, validationContext);
     }
 }

@@ -51,7 +51,7 @@ public class ContentFacade {
 
         productMiddleware = Middleware.link(
                 new ContentMiddleware(userService),
-                new ProductMiddleware(userService)
+                new ProductMiddleware(userService, productService)
         );
     }
 
@@ -169,8 +169,7 @@ public class ContentFacade {
     }
 
     public boolean updateProduct(long id, ProductDTO productDTO) {
-        if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forUpdate())) return false;
-
+        if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forUpdate(id))) return false;
         var original = productService.getProduct(id);
         var author = userService.getUserById(productDTO.getAuthorId());
         var updatedProduct = ProductDTO.fromDTO(productDTO, author);
