@@ -43,18 +43,17 @@ public class ProductPacketService {
         if(updatedProductPacket == null) return false;
         if(productPacket == null) return false;
 
-        if (updatedProductPacket.getName() != null && !updatedProductPacket.getName().isBlank()) {
+        if(!productPacket.getName().equals(updatedProductPacket.getName())){
             productPacket.setName(updatedProductPacket.getName());
         }
 
-        if (updatedProductPacket.getDescription() != null && !updatedProductPacket.getDescription().isBlank()) {
+        if(!productPacket.getDescription().equals(updatedProductPacket.getDescription())){
             productPacket.setDescription(updatedProductPacket.getDescription());
         }
 
-        if (updatedProductPacket.getProductsInPacket() != null) {
-            productPacket.setProductsInPacket(updatedProductPacket.getProductsInPacket());
-        }
-
+        productPacket.setProductsInPacket(updatedProductPacket.getProductsInPacket());
+        productPacket.setReviewNeeded(false);
+        productPacket.setApproved(false);
         productPacketRepository.save(productPacket);
         return true;
     }
@@ -111,5 +110,9 @@ public class ProductPacketService {
 
     public List<ProductPacket> getAllApprovedProductPackets(String filter) {
         return productPacketRepository.findAllApprovedProductPacketsByFilter(filter);
+    }
+
+    public boolean existsPacket(long packetId) {
+        return productPacketRepository.existsById(packetId);
     }
 }

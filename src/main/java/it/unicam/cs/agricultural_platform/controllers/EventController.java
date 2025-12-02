@@ -6,6 +6,7 @@ import it.unicam.cs.agricultural_platform.facades.EventFacade;
 import it.unicam.cs.agricultural_platform.models.event.Event;
 import it.unicam.cs.agricultural_platform.models.event.Partecipation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,14 +41,13 @@ public class EventController {
         return new ResponseEntity<>(eventDTO, HttpStatus.OK);
     }
 
-    @GetMapping(params = "name")
-    public ResponseEntity<EventDTO> getEventByName(@RequestParam String name) {
-        Event event = eventFacade.getEvent(name);
-        if(event == null) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    @GetMapping(params = "filter")
+    public ResponseEntity<List<EventDTO>> getEventByFilter(@RequestParam String filter) {
+        List<Event> event = eventFacade.getEvents(filter);
+        if(event == null || event.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        EventDTO eventDTO = EventDTO.fromEvent(event);
-
-        return new ResponseEntity<>(eventDTO, HttpStatus.OK);
+        List<EventDTO> eventDTOList = event.stream().map(EventDTO::fromEvent).collect(Collectors.toList());
+        return new ResponseEntity<>(eventDTOList, HttpStatus.OK);
     }
 
     @PostMapping("/add")
@@ -74,6 +74,7 @@ public class EventController {
     public ResponseEntity<List<PartecipationDTO>> getParticipants(@PathVariable long id) {
         List<Partecipation> partecipationList = eventFacade.getParticipants(id);
         if(partecipationList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(partecipationList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
         List<PartecipationDTO> partecipationDTOList = partecipationList.stream().map(PartecipationDTO::fromPartecipation).collect(Collectors.toList());
 
@@ -96,5 +97,16 @@ public class EventController {
     public ResponseEntity<Object> addParticipants(@PathVariable long id, @RequestBody List<Long> usersIds) {
         if(!eventFacade.addParticipants(id, usersIds)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{id}/partecipations")
+    public ResponseEntity<Object> getUsersPartecipations(@PathVariable long id){
+        List<Partecipation> userPartecipationList = eventFacade.getUserPartecipations(id);
+        if(userPartecipationList == null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(userPartecipationList.isEmpty()) return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        List<PartecipationDTO> partecipationDTOList = userPartecipationList.stream().map(PartecipationDTO::fromPartecipation).collect(Collectors.toList());
+
+        return new ResponseEntity<>(partecipationDTOList, HttpStatus.OK);
     }
 }

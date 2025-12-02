@@ -17,19 +17,19 @@ public class MarketController {
 
     @PutMapping("/addToCart")
     public ResponseEntity<Object> addItemToUserCart(@RequestBody ItemCartOperationDTO operationDTO) {
-        if(!marketFacade.addItemToUserCart(operationDTO.getUserId(), operationDTO.getContentId(), operationDTO.getQuantity())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(!marketFacade.addItemToUserCart(operationDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/removeFromCart")
     public ResponseEntity<Object> removeItemFromUserCart(@RequestBody ItemCartOperationDTO operationDTO) {
-        if(!marketFacade.removeItemFromUserCart(operationDTO.getUserId(), operationDTO.getContentId(), operationDTO.getQuantity())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(!marketFacade.removeItemFromUserCart(operationDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/updateContentMarketData")
     public ResponseEntity<Object> updateContentMarketData(@RequestBody UpdateMarketDataDTO updateDTO) {
-        if(!marketFacade.updateContentMarketData(updateDTO.getContentId(), updateDTO.getPrice(), updateDTO.getStockQuantity())) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        if(!marketFacade.updateContentMarketData(updateDTO)) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

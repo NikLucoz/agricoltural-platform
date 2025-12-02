@@ -1,17 +1,24 @@
 package it.unicam.cs.agricultural_platform.facades;
 
+import it.unicam.cs.agricultural_platform.dto.content.ContentDTO;
 import it.unicam.cs.agricultural_platform.dto.content.ProductDTO;
 import it.unicam.cs.agricultural_platform.dto.content.ProductPacketDTO;
+import it.unicam.cs.agricultural_platform.middlewares.Middleware;
+import it.unicam.cs.agricultural_platform.middlewares.MiddlewareValidationContext;
+import it.unicam.cs.agricultural_platform.middlewares.content.ContentMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.content.ProductInPacketMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.content.ProductMiddleware;
+import it.unicam.cs.agricultural_platform.middlewares.content.ProductPacketMiddleware;
 import it.unicam.cs.agricultural_platform.models.Content;
 import it.unicam.cs.agricultural_platform.models.product.Product;
 import it.unicam.cs.agricultural_platform.models.product.ProductInPacket;
 import it.unicam.cs.agricultural_platform.models.product.ProductPacket;
 import it.unicam.cs.agricultural_platform.models.user.User;
-import it.unicam.cs.agricultural_platform.models.user.UserType;
 import it.unicam.cs.agricultural_platform.repositories.CartItemRepository;
 import it.unicam.cs.agricultural_platform.services.ProductPacketService;
 import it.unicam.cs.agricultural_platform.services.ProductService;
 import it.unicam.cs.agricultural_platform.services.UserService;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -28,10 +35,25 @@ public class ContentFacade {
     private ProductPacketService productPacketService;
     @Autowired
     private UserService userService;
-
     @Autowired
     private CartItemRepository cartItemRepository;
 
+    private Middleware<ContentDTO> productPacketMiddleware;
+    private Middleware<ContentDTO> productMiddleware;
+
+    @PostConstruct
+    private void init(){
+        productPacketMiddleware = Middleware.link(
+                new ContentMiddleware(userService),
+                new ProductPacketMiddleware(userService, productPacketService),
+                new ProductInPacketMiddleware(productPacketService, productService)
+        );
+
+        productMiddleware = Middleware.link(
+                new ContentMiddleware(userService),
+                new ProductMiddleware(userService, productService)
+        );
+    }
 
     //region CONTENT METHODS
 
@@ -137,9 +159,9 @@ public class ContentFacade {
     }
 
     public boolean addProduct(ProductDTO productDTO) {
-        var author = userService.getUserById(productDTO.getAuthorId());
-        if(!author.hasUserType(UserType.PRODUCER)) return false;
+        if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forCreate())) return false;
 
+        var author = userService.getUserById(productDTO.getAuthorId());
         var product = ProductDTO.fromDTO(productDTO, author);
         product.setApproved(false);
         product.setReviewNeeded(false);
@@ -147,9 +169,9 @@ public class ContentFacade {
     }
 
     public boolean updateProduct(long id, ProductDTO productDTO) {
+        if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forUpdate(id))) return false;
         var original = productService.getProduct(id);
-        var author = userService.getUserById(productDTO.getAuthorId());
-        var updatedProduct = ProductDTO.fromDTO(productDTO, author);
+        var updatedProduct = ProductDTO.fromDTO(productDTO, original.getAuthor());
 
         return productService.updateProduct(original, updatedProduct);
     }
@@ -182,49 +204,39 @@ public class ContentFacade {
     }
 
     public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
-        var author = userService.getUserById(productPacketDTO.getAuthorId());
-        if(!author.hasUserType(UserType.DISTRIBUTOR)) return false;
+        if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forCreate())) return false;
+        var user = userService.getUserById(productPacketDTO.getAuthorId());
+        var productPacket = createPacketFromDTO(productPacketDTO, user);
 
+        productPacket.setApproved(false);
+        productPacket.setReviewNeeded(false);
+        return productPacketService.addProductPacket(productPacket);
+    }
+
+    private ProductPacket createPacketFromDTO(ProductPacketDTO productPacketDTO, User author) {
         var productPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
-
         var productsInPacket = new ArrayList<ProductInPacket>();
 
         // Cerco i prodotti da mettere nel pacchetto tramite gli id nel DTO e li aggiungo alla lista
         for(var productInPacketDto : productPacketDTO.getProductsInPacket()) {
             var product_id = productInPacketDto.getProductId();
 
-            if (!productService.existsProduct(product_id)) continue;
             var product = productService.getProduct(product_id);
             var productInPacket = new ProductInPacket(productPacket, product, productInPacketDto.getQuantity());
             productsInPacket.add(productInPacket);
         }
 
         productPacket.setProductsInPacket(productsInPacket);
-        productPacket.setApproved(false);
-        productPacket.setReviewNeeded(false);
-        return productPacketService.addProductPacket(productPacket);
+        return productPacket;
     }
 
     public boolean deleteProductPacket(long id) { return productPacketService.deleteProductPacket(id); }
 
     public boolean updateProductPacket(long id, ProductPacketDTO productPacketDTO) {
+        if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forUpdate(id))) return false;
+
         var original = productPacketService.getProductPacket(id);
-        var author = userService.getUserById(productPacketDTO.getAuthorId());
-        var updatedProductPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
-
-        var productsInPacket = new ArrayList<ProductInPacket>();
-
-        // Cerco i prodotti da mettere nel pacchetto tramite gli id nel DTO e li aggiungo alla lista
-        for(var productInPacketDto : productPacketDTO.getProductsInPacket()) {
-            var product_id = productInPacketDto.getProductId();
-
-            if (!productService.existsProduct(product_id)) continue;
-            var product = productService.getProduct(product_id);
-            var productInPacket = new ProductInPacket(original, product, productInPacketDto.getQuantity());
-            productsInPacket.add(productInPacket);
-        }
-
-        updatedProductPacket.setProductsInPacket(productsInPacket);
+        var updatedProductPacket = createPacketFromDTO(productPacketDTO, original.getAuthor());
         return productPacketService.updateProductPacket(original, updatedProductPacket);
     }
 

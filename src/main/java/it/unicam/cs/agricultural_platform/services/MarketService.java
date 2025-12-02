@@ -19,7 +19,6 @@ public class MarketService {
     public boolean addItemToUserCart(User user, long id, int quantity){
         UserCart userCart = user.getUserCart();
         if(userCart == null) return false;
-        if(!contentRepository.existsById(id)) return false;
         var content = contentRepository.findById(id);
         if(content.getStockQuantity() <= 0) return false;
         if (userCart.addToCart(content, quantity)){
@@ -32,7 +31,6 @@ public class MarketService {
     public boolean removeItemFromUserCart(User user, long id, int quantity){
         UserCart userCart = user.getUserCart();
         if(userCart == null) return false;
-        if(!contentRepository.existsById(id)) return false;
         var content = contentRepository.findById(id);
         if(content.getStockQuantity() <= 0) return false;
         if (userCart.removeFromCart(content, quantity)){
@@ -43,9 +41,7 @@ public class MarketService {
     }
 
     public boolean updateContentMarketData(long id, double price, int stockQuantity){
-        if(!contentRepository.existsById(id)) return false;
         var content = contentRepository.findById(id);
-        if (price < 0 || stockQuantity < 0) return false;
         content.setPrice(price);
         content.setStockQuantity(stockQuantity);
         contentRepository.save(content);
