@@ -45,7 +45,7 @@ public class ContentFacade {
     private void init(){
         productPacketMiddleware = Middleware.link(
                 new ContentMiddleware(userService),
-                new ProductPacketMiddleware(userService),
+                new ProductPacketMiddleware(userService, productPacketService),
                 new ProductInPacketMiddleware(productPacketService, productService)
         );
 
@@ -171,8 +171,7 @@ public class ContentFacade {
     public boolean updateProduct(long id, ProductDTO productDTO) {
         if(!productMiddleware.handle(productDTO, MiddlewareValidationContext.forUpdate(id))) return false;
         var original = productService.getProduct(id);
-        var author = userService.getUserById(productDTO.getAuthorId());
-        var updatedProduct = ProductDTO.fromDTO(productDTO, author);
+        var updatedProduct = ProductDTO.fromDTO(productDTO, original.getAuthor());
 
         return productService.updateProduct(original, updatedProduct);
     }
@@ -206,16 +205,15 @@ public class ContentFacade {
 
     public boolean addProductPacket(ProductPacketDTO productPacketDTO) {
         if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forCreate())) return false;
-
-        var productPacket = createPacketFromDTO(productPacketDTO);
+        var user = userService.getUserById(productPacketDTO.getAuthorId());
+        var productPacket = createPacketFromDTO(productPacketDTO, user);
 
         productPacket.setApproved(false);
         productPacket.setReviewNeeded(false);
         return productPacketService.addProductPacket(productPacket);
     }
 
-    private ProductPacket createPacketFromDTO(ProductPacketDTO productPacketDTO) {
-        var author = userService.getUserById(productPacketDTO.getAuthorId());
+    private ProductPacket createPacketFromDTO(ProductPacketDTO productPacketDTO, User author) {
         var productPacket = ProductPacketDTO.fromDTO(productPacketDTO, author);
         var productsInPacket = new ArrayList<ProductInPacket>();
 
@@ -235,10 +233,10 @@ public class ContentFacade {
     public boolean deleteProductPacket(long id) { return productPacketService.deleteProductPacket(id); }
 
     public boolean updateProductPacket(long id, ProductPacketDTO productPacketDTO) {
-        if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forUpdate())) return false;
+        if(!productPacketMiddleware.handle(productPacketDTO, MiddlewareValidationContext.forUpdate(id))) return false;
 
         var original = productPacketService.getProductPacket(id);
-        var updatedProductPacket = createPacketFromDTO(productPacketDTO);
+        var updatedProductPacket = createPacketFromDTO(productPacketDTO, original.getAuthor());
         return productPacketService.updateProductPacket(original, updatedProductPacket);
     }
 

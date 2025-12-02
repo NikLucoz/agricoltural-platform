@@ -21,10 +21,13 @@ public class ProductMiddleware extends Middleware<ContentDTO> {
     @Override
     public boolean handle(ContentDTO data, MiddlewareValidationContext validationContext) {
         if(data instanceof ProductDTO productDTO) {
-            var originalProductId = validationContext.getOptionalId();
-            if(!productService.existsProduct(originalProductId)) return false;
-            var product = productService.getProduct(originalProductId);
-            var authorId = product.getAuthor().getId();
+            var authorId = data.getAuthorId();
+            if(validationContext.isUpdate()) {
+                var originalProductId = validationContext.getOptionalId();
+                if(!productService.existsProduct(originalProductId)) return false;
+                var product = productService.getProduct(originalProductId);
+                authorId = product.getAuthor().getId();
+            }
 
             if(!userService.hasUserType(authorId, UserType.PRODUCER)) return false;
             if(productDTO.getProcesses() != null && !productDTO.getProcesses().isBlank()) {
